@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@color/black">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_marginHorizontal="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:text="Calculator"
+            android:textStyle="bold"
+            android:textColor="@color/primary"
+            android:gravity="center"
+            android:textSize="50dp"/>
+        <Button
+            android:id="@+id/simpleCalcBtn"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/inverted_calc_button"
+            android:textColor="@color/background"
+            android:text="Simple calculator"
+            android:textSize="25dp"
+            android:layout_margin="@dimen/calculatorButtonMargin"/>
+        <Button
+            android:id="@+id/advancedCalcBtn"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/inverted_calc_button"
+            android:textColor="@color/background"
+            android:text="Advanced calculator"
+            android:textSize="25dp"
+            android:layout_margin="@dimen/calculatorButtonMargin"/>
+        <Button
+            android:id="@+id/aboutBtn"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/inverted_calc_button"
+            android:textColor="@color/background"
+            android:text="info"
+            android:textSize="25dp"
+            android:layout_margin="@dimen/calculatorButtonMargin"/>
+
+        <Button
+            android:id="@+id/exitBtn"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/calculator_button"
+            android:textColor="@color/primary"
+            android:text="Exit"
+            android:textSize="25dp"
+            android:layout_margin="@dimen/calculatorButtonMargin"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
