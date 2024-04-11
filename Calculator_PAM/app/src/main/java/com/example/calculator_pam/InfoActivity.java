@@ -1,4 +1,6 @@
 package com.example.calculator_pam;
 
-public class InfoActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class InfoActivity extends AppCompatActivity {
 }

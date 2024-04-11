@@ -1,4 +1,6 @@
 package com.example.calculator_pam;
 
-public class AdvancedCalculatorActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class AdvancedCalculatorActivity extends SimpleCalculatorActivity {
 }
