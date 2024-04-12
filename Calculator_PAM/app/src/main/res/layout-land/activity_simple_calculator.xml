@@ -23,19 +23,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:text="321 + 4000"
+            android:text=""
             android:textSize="36sp"
             android:textColor="@color/secondary"
-            android:paddingTop="20dp"/>
+            android:paddingTop="0dp"/>
 
         <TextView
-            android:id="@+id/calc_result"
+            android:id="@+id/calc_expression"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:text="4321"
+            android:text=""
             android:textSize="32sp"
-            android:textColor="@color/secondary"
+            android:textColor="@color/background_secondary"
             android:paddingTop="10dp"/>
     </LinearLayout>
 

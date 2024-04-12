@@ -2,19 +2,36 @@ package com.example.calculator_pam;
 
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import org.mariuszgromada.math.mxparser.Expression;
 
 public class SimpleCalculatorActivity extends AppCompatActivity {
 
-    protected TextView inputTextView, outputTextView;
-    protected String expression, currentInput;
+    protected TextView inputTextView, expressionTextView;
+    protected String currentInput = "";
+    protected String expression = "";
+
+    protected boolean isClearPreviousInput = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_simple_calculator);
+
+        initTextViews();
+        setButtonsOnClickListeners();
+
     }
 
-    private void setButtonsOnClickListeners() {
+    //TODO: Keep expression after rotation
+
+    protected void initTextViews() {
+        inputTextView = findViewById(R.id.calc_input);
+        expressionTextView = findViewById(R.id.calc_expression);
+    }
+
+    protected void setButtonsOnClickListeners() {
         // Operators
         findViewById(R.id.Btn0).setOnClickListener(v -> addOperand("0"));
         findViewById(R.id.Btn1).setOnClickListener(v -> addOperand("1"));
@@ -46,27 +63,122 @@ public class SimpleCalculatorActivity extends AppCompatActivity {
     }
 
     private void addOperand(String operand) {
-        //TODO
+        isClearPreviousInput = false;
+
+        // Handle zero
+        if(currentInput.equals("0")) {
+            if (operand.equals("0")) {
+                // Prevent multiple zeros
+                return;
+            } else {
+                currentInput = "";
+            }
+        }
+
+        // Handle decimal point
+        if(operand.equals(".")) {
+            if(currentInput.isEmpty()) {
+                currentInput+="0";
+            } else if (currentInput.contains(".")) { // avoid double dot
+                Toast.makeText(this, "The number already contains decimal point.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        } else if(!"0123456789".contains(operand)) {
+            Toast.makeText(this, "Invalid operand input", Toast.LENGTH_SHORT).show();
+            return; // return if operand is invalid
+        }
+
+        // Add operand to currentInput string
+        currentInput+=operand;
+        inputTextView.setText(currentInput);
     }
 
     private void addOperator(String operator) {
-        //TODO
+        isClearPreviousInput = false;
+        String operators = "+-÷×";
+        if(currentInput.endsWith(".")) {
+            currentInput+="0";
+        }
+
+        //validate operator
+        if(currentInput.isEmpty()) {
+            Toast.makeText(this, "Number must be inputted prior to operation.", Toast.LENGTH_SHORT).show();
+            return;
+        } else if (expression.length() >= 2 && operators.contains(String.valueOf(expression.charAt(expression.length() - 1)))) {
+            Toast.makeText(this, "Operator can't be followed by another operator.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Move current input to expression and add operator
+        expression = expression + currentInput + " " + operator + " ";
+        // Clear current input
+        currentInput = "";
+
+        expressionTextView.setText(expression);
+        inputTextView.setText(currentInput);
     }
 
     private void invertNumber() {
-        //TODO
+        isClearPreviousInput = false;
+        if(currentInput.isEmpty()) {
+            Toast.makeText(this, "Input number first.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            double currentInputValue = Double.parseDouble(currentInput);
+            if(currentInputValue == 0) {
+                Toast.makeText(this, "Zero can't be negative.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            currentInput = String.valueOf(-currentInputValue);
+            inputTextView.setText(currentInput);
+        } catch (Exception e) {
+            Toast.makeText(this, "Invalid input.", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    private void calculate() {
-        //TODO
+    protected void calculate() {
+        isClearPreviousInput = false;
+        if(currentInput.endsWith(".")) {
+            currentInput+= "0";
+        }
+
+        expression+= currentInput;
+        expressionTextView.setText(expression);
+
+        Expression exp = new Expression(expression);
+        double result = (new Expression(expression)).calculate();
+
+        if (Double.isNaN(result)) {
+            Toast.makeText(this, "Invalid calculation.", Toast.LENGTH_SHORT).show();
+            currentInput = "";
+            expression = "";
+            inputTextView.setText("");
+        } else {
+            currentInput = String.valueOf(result);
+            inputTextView.setText(currentInput);
+            expression = "";
+        }
+
     }
 
     private void clear() {
-        //TODO
+        if(!isClearPreviousInput) {
+            isClearPreviousInput = true;
+            currentInput = "";
+            inputTextView.setText(currentInput);
+        }
+        else {
+            allClear();
+        }
     }
 
     private void allClear() {
-        //TODO
+        currentInput = "";
+        expression = "";
+        inputTextView.setText(currentInput);
+        expressionTextView.setText(expression);
     }
 
 
