@@ -323,14 +323,29 @@
             android:layout_margin="@dimen/calculatorButtonMargin"/>
 
         <Button
-            android:id="@+id/resultBtn"
+            android:id="@+id/percentBtn"
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_row="2"
             android:layout_rowWeight="1"
             android:layout_column="6"
-            android:layout_rowSpan="2"
+            android:layout_columnWeight="1"
+            android:background="@drawable/calculator_secondary_button"
+            android:textColor="@color/background_secondary"
+            android:text="%"
+            android:textSize="@dimen/calculatorButtonTextSize"
+            android:layout_margin="@dimen/calculatorButtonMargin"/>
+
+        <Button
+            android:id="@+id/resultBtn"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_row="3"
+            android:layout_rowWeight="1"
+            android:layout_column="6"
+            android:layout_rowSpan="1"
             android:layout_columnWeight="1"
             android:background="@drawable/inverted_calc_button"
             android:textColor="@color/background"

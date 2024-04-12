@@ -1,9 +1,12 @@
 package com.example.calculator_pam;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import org.mariuszgromada.math.mxparser.Expression;
 
@@ -17,14 +20,30 @@ public class SimpleCalculatorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_simple_calculator);
 
         initTextViews();
         setButtonsOnClickListeners();
-
     }
 
-    //TODO: Keep expression after rotation
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putString("currentInput", currentInput);
+        outState.putString("expression", expression);
+        outState.putBoolean("isClearPreviousInput", isClearPreviousInput);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        currentInput = savedInstanceState.getString("currentInput");
+        expression = savedInstanceState.getString("expression");
+        isClearPreviousInput = savedInstanceState.getBoolean("isClearPreviousInput");
+        expressionTextView.setText(expression);
+        inputTextView.setText(currentInput);
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 
     protected void initTextViews() {
         inputTextView = findViewById(R.id.calc_input);
@@ -62,7 +81,7 @@ public class SimpleCalculatorActivity extends AppCompatActivity {
         findViewById(R.id.resultBtn).setOnClickListener(v -> calculate());
     }
 
-    private void addOperand(String operand) {
+    protected void addOperand(String operand) {
         isClearPreviousInput = false;
 
         // Handle zero
@@ -93,7 +112,7 @@ public class SimpleCalculatorActivity extends AppCompatActivity {
         inputTextView.setText(currentInput);
     }
 
-    private void addOperator(String operator) {
+    protected void addOperator(String operator) {
         isClearPreviousInput = false;
         String operators = "+-÷×";
         if(currentInput.endsWith(".")) {
@@ -116,6 +135,24 @@ public class SimpleCalculatorActivity extends AppCompatActivity {
 
         expressionTextView.setText(expression);
         inputTextView.setText(currentInput);
+    }
+
+    private void clear() {
+        if(!isClearPreviousInput) {
+            isClearPreviousInput = true;
+            currentInput = "";
+            inputTextView.setText(currentInput);
+        }
+        else {
+            allClear();
+        }
+    }
+
+    private void allClear() {
+        currentInput = "";
+        expression = "";
+        inputTextView.setText(currentInput);
+        expressionTextView.setText(expression);
     }
 
     private void invertNumber() {
@@ -160,26 +197,6 @@ public class SimpleCalculatorActivity extends AppCompatActivity {
             inputTextView.setText(currentInput);
             expression = "";
         }
-
     }
-
-    private void clear() {
-        if(!isClearPreviousInput) {
-            isClearPreviousInput = true;
-            currentInput = "";
-            inputTextView.setText(currentInput);
-        }
-        else {
-            allClear();
-        }
-    }
-
-    private void allClear() {
-        currentInput = "";
-        expression = "";
-        inputTextView.setText(currentInput);
-        expressionTextView.setText(expression);
-    }
-
 
 }
