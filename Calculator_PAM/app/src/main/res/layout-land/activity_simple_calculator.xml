@@ -63,7 +63,10 @@
             android:background="@drawable/inverted_calc_button"
             android:textColor="@color/background"
             android:text="AC"
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
 
         <Button
@@ -78,7 +81,10 @@
             android:background="@drawable/calculator_secondary_button"
             android:textColor="@color/secondary"
             android:text="C"
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
 
         <Button
@@ -93,7 +99,10 @@
             android:background="@drawable/calculator_secondary_button"
             android:textColor="@color/background_secondary"
             android:text="+-"
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
 
         <Button
@@ -108,7 +117,10 @@
             android:background="@drawable/calculator_secondary_button"
             android:textColor="@color/background_secondary"
             android:text="÷"
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
         <!--Second row-->
         <Button
@@ -123,7 +135,10 @@
             android:background="@drawable/calculator_button"
             android:textColor="@color/primary"
             android:text="7"
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
 
         <Button
@@ -138,7 +153,10 @@
             android:background="@drawable/calculator_button"
             android:textColor="@color/primary"
             android:text="8"
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
 
         <Button
@@ -153,7 +171,10 @@
             android:background="@drawable/calculator_button"
             android:textColor="@color/primary"
             android:text="9"
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
 
         <Button
@@ -168,7 +189,10 @@
             android:background="@drawable/calculator_secondary_button"
             android:textColor="@color/background_secondary"
             android:text="×"
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
 
         <!--Third row-->
@@ -184,7 +208,10 @@
             android:background="@drawable/calculator_button"
             android:textColor="@color/primary"
             android:text="4"
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
 
         <Button
@@ -199,7 +226,10 @@
             android:background="@drawable/calculator_button"
             android:textColor="@color/primary"
             android:text="5"
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
 
         <Button
@@ -214,7 +244,10 @@
             android:background="@drawable/calculator_button"
             android:textColor="@color/primary"
             android:text="6"
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
 
         <Button
@@ -229,7 +262,10 @@
             android:background="@drawable/calculator_secondary_button"
             android:textColor="@color/background_secondary"
             android:text="-"
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
         <!--Fourth row-->
         <Button
@@ -244,7 +280,10 @@
             android:background="@drawable/calculator_button"
             android:textColor="@color/primary"
             android:text="1"
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
 
         <Button
@@ -259,7 +298,10 @@
             android:background="@drawable/calculator_button"
             android:textColor="@color/primary"
             android:text="2"
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
 
         <Button
@@ -274,7 +316,10 @@
             android:background="@drawable/calculator_button"
             android:textColor="@color/primary"
             android:text="3"
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
 
         <Button
@@ -289,7 +334,10 @@
             android:background="@drawable/calculator_secondary_button"
             android:textColor="@color/background_secondary"
             android:text="+"
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
 
         <Button
@@ -304,7 +352,10 @@
             android:background="@drawable/calculator_button"
             android:textColor="@color/primary"
             android:text="."
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
 
         <Button
@@ -319,7 +370,10 @@
             android:background="@drawable/calculator_button"
             android:textColor="@color/primary"
             android:text="0"
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
 
         <Button
@@ -335,7 +389,10 @@
             android:background="@drawable/inverted_calc_button"
             android:textColor="@color/background"
             android:text="="
-            android:textSize="@dimen/calculatorButtonTextSize"
+            android:autoSizeMaxTextSize="@dimen/calculatorButtonMaxTextSize"
+            android:autoSizeMinTextSize="@dimen/calculatorButtonMinTextSize"
+            android:autoSizeStepGranularity="2sp"
+            android:autoSizeTextType="uniform"
             android:layout_margin="@dimen/calculatorButtonMargin"/>
     </GridLayout>
 

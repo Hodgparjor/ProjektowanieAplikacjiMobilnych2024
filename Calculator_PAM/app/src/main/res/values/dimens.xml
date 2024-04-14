@@ -3,5 +3,7 @@
     <dimen name="inputTextSize">36sp</dimen>
     <dimen name="outputTextSize">36sp</dimen>
     <dimen name="calculatorButtonTextSize">32sp</dimen>
+    <dimen name="calculatorButtonMinTextSize">20sp</dimen>
+    <dimen name="calculatorButtonMaxTextSize">38sp</dimen>
     <dimen name="calculatorButtonMargin">3dp</dimen>
 </resources>
