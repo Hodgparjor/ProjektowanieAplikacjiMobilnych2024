@@ -1,8 +1,9 @@
 package com.example.weatherforecast.DataModel;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ForecastData {
+public class ForecastData implements Serializable {
     public String cod;
     public int message;
     public int cnt;
