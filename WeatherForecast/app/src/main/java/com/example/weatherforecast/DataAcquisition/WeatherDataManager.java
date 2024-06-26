@@ -11,6 +11,7 @@ import com.example.weatherforecast.DataModel.Coords;
 import com.example.weatherforecast.DataModel.ForecastData;
 import com.example.weatherforecast.DataModel.WeatherData;
 import com.example.weatherforecast.utils.NetworkUtil;
+import com.example.weatherforecast.utils.RetrofitUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -39,6 +40,7 @@ public class WeatherDataManager {
 
     public WeatherDataManager(Context context) {
         this.context = context;
+        weatherService = RetrofitUtil.getClient().create(WeatherService.class);
     }
 
     public void getData(String location) {
@@ -46,11 +48,12 @@ public class WeatherDataManager {
             getWeatherData(location);
             getForecastData(location);
         } else {
-            //TODO  Load data from file
+            readWeatherDataFromFile();
+            readForecastDataFromFile();
         }
     }
 
-    private void getWeatherData(String location) {
+    public void getWeatherData(String location) {
         Coords locationCords = LocationDataManager.getCoords(location);
         weatherService.getOpenWeatherWeatherData(locationCords.lat, locationCords.lon, OPENWEATHER_API_KEY).enqueue(new Callback<WeatherData>() {
             @Override
@@ -70,7 +73,7 @@ public class WeatherDataManager {
         });
     }
 
-    private void getForecastData(String location) {
+    public void getForecastData(String location) {
         Coords locationCords = LocationDataManager.getCoords(location);
         weatherService.getOpenWeatherForecastData(locationCords.lat, locationCords.lon, OPENWEATHER_API_KEY).enqueue(new Callback<ForecastData>() {
             @Override
