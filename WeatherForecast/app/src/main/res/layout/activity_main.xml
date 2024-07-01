@@ -27,6 +27,8 @@
                 android:layout_height="match_parent"
                 android:text="Refresh"
                 android:layout_margin="5dp"
+                android:background="@color/black"
+                android:textColor="@color/primary"
                 />
 
             <TextView
@@ -34,7 +36,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="4"
                 android:text="Weatherly"
-                android:textColor="@color/white"
+                android:textColor="@color/secondary_red"
                 android:textSize="20sp"
                 android:autoSizeMinTextSize="20sp"
                 android:autoSizeMaxTextSize="25sp"
@@ -48,7 +50,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Settings"
-                android:layout_margin="5dp"/>
+                android:layout_margin="5dp"
+                android:background="@color/black"
+                android:textColor="@color/primary" />
         </LinearLayout>
 
         <FrameLayout
@@ -73,21 +77,27 @@
                 android:text="Weather"
                 android:layout_weight="1"
                 android:layout_gravity="center"
-                android:layout_margin="5dp"/>
+                android:layout_margin="5dp"
+                android:background="@color/black"
+                android:textColor="@color/primary"/>
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnDetails"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Details"
-                android:layout_margin="5dp"/>
+                android:layout_margin="5dp"
+                android:background="@color/black"
+                android:textColor="@color/primary" />
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnForecast"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="Forecast"
-                android:layout_margin="5dp"/>
+                android:layout_margin="5dp"
+                android:background="@color/black"
+                android:textColor="@color/primary" />
 
         </LinearLayout>
 

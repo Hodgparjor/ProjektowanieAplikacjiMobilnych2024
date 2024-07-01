@@ -1,5 +1,7 @@
 package com.example.weatherforecast.UI;
 
+import android.app.Application;
+
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -17,8 +19,8 @@ public class WeatherViewModel extends AndroidViewModel {
     private MutableLiveData<String> currentCity = new MutableLiveData<>();
     private WeatherDataManager weatherDataManager;
 
-    public WeatherViewModel() {
-        super();
+    public WeatherViewModel(Application application) {
+        super(application);
         weatherDataManager = new WeatherDataManager(getApplication().getApplicationContext());
     }
 
