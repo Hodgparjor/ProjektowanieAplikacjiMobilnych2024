@@ -98,7 +98,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:src="@drawable/clock"/>
+                android:src="@drawable/clock2"/>
             <LinearLayout
                 android:gravity="center"
                 android:layout_width="wrap_content"
@@ -131,7 +131,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:src="@drawable/pressure"/>
+                android:src="@drawable/pressure2"/>
             <LinearLayout
                 android:gravity="center"
                 android:layout_width="wrap_content"
