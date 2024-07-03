@@ -5,10 +5,8 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.example.weatherforecast.DataAcquisition.WeatherDataManager;
-import com.example.weatherforecast.DataAcquisition.WeatherService;
 import com.example.weatherforecast.DataModel.ForecastData;
 import com.example.weatherforecast.DataModel.WeatherData;
 
@@ -43,9 +41,13 @@ public class WeatherViewModel extends AndroidViewModel {
         if (!city.equals(currentCity.getValue())) {
             currentCity.setValue(city);
             if (fetch) {
-                weatherDataManager.getData(city);
+                weatherDataManager.fetchData(city);
             }
         }
+    }
+
+    public void fetchData() {
+        //weatherDataManager.fetchData();
     }
 
     public LiveData<String> getCurrentCity() {

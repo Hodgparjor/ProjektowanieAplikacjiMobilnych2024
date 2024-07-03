@@ -3,6 +3,8 @@ package com.example.weatherforecast.UI;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +14,11 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.weatherforecast.DataAcquisition.WeatherDataManager;
+import com.example.weatherforecast.DataModel.ForecastData;
+import com.example.weatherforecast.DataModel.WeatherData;
 import com.example.weatherforecast.R;
+import com.example.weatherforecast.utils.NetworkUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -76,5 +82,28 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentFrame, fragment)
                 .commit();
+    }
+
+    private void fetchInitialData(String city) {
+        if (city == null) {
+            Log.e("fetchInitialData", "City is null");
+            return;
+        }
+        if (NetworkUtil.isNetworkAvailable(this)) {
+            Toast.makeText(this, "fetching data for " + city, Toast.LENGTH_SHORT).show();
+            weatherViewModel.getWeatherData();
+            weatherViewModel.getForecastData();
+        }
+//        else {
+//            WeatherData weather = weatherViewModel.get;
+//            ForecastData forecast = loadForecastDataFromFile();
+//            if (weather != null && forecast != null) {
+//                weatherViewModel.setWeatherData(weather);
+//                weatherViewModel.setForecastData(forecast);
+//            }
+//            showNoInternetDialog();
+//        }
+//        weatherViewModel.setCurrentCity(city, false);
+//        updateSaveButtonIcon(city);
     }
 }

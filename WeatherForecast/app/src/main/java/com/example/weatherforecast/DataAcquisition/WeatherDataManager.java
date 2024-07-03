@@ -26,8 +26,6 @@ import java.util.HashMap;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.GET;
-import retrofit2.http.Query;
 
 public class WeatherDataManager {
     private Context context;
@@ -43,7 +41,7 @@ public class WeatherDataManager {
         weatherService = RetrofitUtil.getClient().create(WeatherService.class);
     }
 
-    public void getData(String location) {
+    public void fetchData (String location) {
         if (NetworkUtil.isNetworkAvailable(context)) {
             getWeatherData(location);
             getForecastData(location);
