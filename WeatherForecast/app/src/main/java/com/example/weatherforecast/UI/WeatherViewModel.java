@@ -1,6 +1,7 @@
 package com.example.weatherforecast.UI;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
@@ -11,8 +12,7 @@ import com.example.weatherforecast.DataModel.ForecastData;
 import com.example.weatherforecast.DataModel.WeatherData;
 
 public class WeatherViewModel extends AndroidViewModel {
-    // TODO: Implement the ViewModel
-    private final MutableLiveData<WeatherData> weatherData = new MutableLiveData<>();
+    private MutableLiveData<WeatherData> weatherData = new MutableLiveData<>();
     private MutableLiveData<ForecastData> forecastData = new MutableLiveData<>();
     private MutableLiveData<String> currentCity = new MutableLiveData<>();
     private WeatherDataManager weatherDataManager;
@@ -40,15 +40,21 @@ public class WeatherViewModel extends AndroidViewModel {
     public void setCurrentCity(String city, boolean fetch) {
         if (!city.equals(currentCity.getValue())) {
             currentCity.setValue(city);
+            currentCity.postValue(city);
+            Log.i("WeatherVM_setCurrentCity", "City changed to " + currentCity.getValue());
             if (fetch) {
-                weatherDataManager.fetchData(city);
+                fetchData();
             }
         }
     }
 
     public void fetchData() {
-        //weatherDataManager.fetchData();
+        Log.i("WeatherVM_FetchData", "Fetching data for: " + currentCity.getValue());
+        weatherDataManager.fetchData(currentCity.getValue());
+        setForecastData(weatherDataManager.getForecastData(currentCity.getValue(), false));
+        setWeatherData(weatherDataManager.getWeatherData(currentCity.getValue(), false));
     }
+
 
     public LiveData<String> getCurrentCity() {
         return currentCity;

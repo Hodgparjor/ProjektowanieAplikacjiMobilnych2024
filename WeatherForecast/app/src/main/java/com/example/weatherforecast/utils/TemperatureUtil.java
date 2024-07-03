@@ -7,7 +7,7 @@ import java.util.Locale;
 
 public class TemperatureUtil {
     public static String convertTemperature(Context context, double temperature) {
-        SharedPreferences prefs = context.getSharedPreferences("WeatherForecastPreferences", Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences("WeatherlyPreferences", Context.MODE_PRIVATE);
         String unit = prefs.getString("temperatureUnit", "K");
 
         if ("C".equals(unit)) {

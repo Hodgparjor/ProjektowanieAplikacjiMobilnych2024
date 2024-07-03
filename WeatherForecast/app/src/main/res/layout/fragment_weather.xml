@@ -15,7 +15,7 @@
         android:autoSizeMaxTextSize="40sp"
         android:autoSizeMinTextSize="32sp"
         android:autoSizeStepGranularity="1sp"
-        android:text="Łódź"
+        android:text="City"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -31,7 +31,7 @@
         android:autoSizeMaxTextSize="26sp"
         android:autoSizeMinTextSize="18sp"
         android:autoSizeStepGranularity="1sp"
-        android:text="51.759445, 19.457216"
+        android:text="0, 0"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -58,7 +58,7 @@
         android:autoSizeMaxTextSize="40sp"
         android:autoSizeMinTextSize="32sp"
         android:autoSizeStepGranularity="1sp"
-        android:text="26°C"
+        android:text="0°C"
         android:textColor="@color/primary"
         android:textSize="36sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -115,7 +115,7 @@
                     android:id="@+id/timeValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="10:24"
+                    android:text="00:00"
                     android:textSize="18sp"
                     android:textColor="@color/primary"/>
             </LinearLayout>
@@ -148,7 +148,7 @@
                     android:id="@+id/pressureValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1014 hPa°C"
+                    android:text="0 hPa°C"
                     android:textSize="18sp"
                     android:textColor="@color/primary"/>
             </LinearLayout>

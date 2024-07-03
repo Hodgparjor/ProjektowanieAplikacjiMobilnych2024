@@ -26,25 +26,31 @@ public class LocationDataManager {
         if(!locations.containsKey(location)) {
             fetchLocation(location);
         }
-        return locations.get(location);
+        Coords returnedCoords = locations.get(location);
+        if(returnedCoords != null) {
+            return returnedCoords;
+        }
+        else {
+            return new Coords(0, 0);
+        }
     }
 
     static public void fetchLocation(String city) {
         locationService.getCoordinates(city, 1, OPENWEATHER_API_KEY).enqueue(new Callback<List<LocationData>>() {
             @Override
-            public void onResponse(@NonNull Call<List<LocationData>> call, @NonNull Response<List<LocationData>> response) {
+            public void onResponse( Call<List<LocationData>> call, Response<List<LocationData>> response) {
                 if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
                     LocationData location = response.body().get(0);
                     locations.put(city, new Coords(location.lat, location.lon));
                 }
                 else {
-                    Log.e("WeatherExampleCall", "Failed to fetch coordinates");
+                    Log.e("LocationCall", "Failed to fetch coordinates");
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<List<LocationData>> call, Throwable t) {
-                Log.e("WeatherExampleCall", "Error fetching coordinates", t);
+                Log.e("LocationCall", "Error fetching coordinates", t);
             }
         });
     }

@@ -43,35 +43,50 @@ public class WeatherDataManager {
 
     public void fetchData (String location) {
         if (NetworkUtil.isNetworkAvailable(context)) {
-            getWeatherData(location);
-            getForecastData(location);
+            fetchWeatherData(location);
+            fetchForecastData(location);
         } else {
             readWeatherDataFromFile();
             readForecastDataFromFile();
         }
     }
 
-    public void getWeatherData(String location) {
+    public WeatherData getWeatherData(String location, boolean fetch) {
+        if(!weatherDataHashMap.containsKey(location) || fetch) {
+            fetchWeatherData(location);
+        }
+        return weatherDataHashMap.get(location);
+    }
+
+    public ForecastData getForecastData(String location, boolean fetch) {
+        if(!forecastDataHashMap.containsKey(location) || fetch) {
+            fetchForecastData(location);
+        }
+        return forecastDataHashMap.get(location);
+    }
+
+    public void fetchWeatherData(String location) {
         Coords locationCords = LocationDataManager.getCoords(location);
         weatherService.getOpenWeatherWeatherData(locationCords.lat, locationCords.lon, OPENWEATHER_API_KEY).enqueue(new Callback<WeatherData>() {
             @Override
-            public void onResponse(@NonNull Call<WeatherData> call, @NonNull Response<WeatherData> response) {
+            public void onResponse( Call<WeatherData> call, Response<WeatherData> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     WeatherData weatherData = response.body();
                     updateWeatherDataToHashMap(location, weatherData);
+                    Log.i("fetchWeatherData", "Weather data updated.");
                 } else {
-                    Log.e("getWeatherData","Failed to fetch weather data.");
+                    Log.e("fetchWeatherData","Failed to fetch weather data.");
                 }
             }
 
             @Override
             public void onFailure(Call<WeatherData> call, Throwable t) {
-                Log.e("getWeatherData","Failed to fetch weather data.");
+                Log.e("fetchWeatherData","Failed to fetch weather data - call failure");
             }
         });
     }
 
-    public void getForecastData(String location) {
+    public void fetchForecastData(String location) {
         Coords locationCords = LocationDataManager.getCoords(location);
         weatherService.getOpenWeatherForecastData(locationCords.lat, locationCords.lon, OPENWEATHER_API_KEY).enqueue(new Callback<ForecastData>() {
             @Override
@@ -80,13 +95,13 @@ public class WeatherDataManager {
                     ForecastData forecastData = response.body();
                     updateForecastDataToHashMap(location, forecastData);
                 } else {
-                    Log.e("getWeatherData","Failed to fetch weather data.");
+                    Log.e("fetchForecastData","Failed to fetch weather data.");
                 }
             }
 
             @Override
             public void onFailure(Call<ForecastData> call, Throwable t) {
-                Log.e("getWeatherData","Failed to fetch weather data.");
+                Log.e("fetchForecastData","Failed to fetch weather data.");
             }
         });
     }
@@ -96,6 +111,7 @@ public class WeatherDataManager {
             weatherDataHashMap.remove(location);
         }
         weatherDataHashMap.put(location, weatherData);
+        writeWeatherDataToFile(weatherDataHashMap);
     }
 
     private void updateForecastDataToHashMap(String location, ForecastData forecastData) {
@@ -103,6 +119,7 @@ public class WeatherDataManager {
             forecastDataHashMap.remove(location);
         }
         forecastDataHashMap.put(location, forecastData);
+        writeForecastDataToFile(forecastDataHashMap);
     }
 
     private void writeWeatherDataToFile(HashMap<String, WeatherData> weather) {

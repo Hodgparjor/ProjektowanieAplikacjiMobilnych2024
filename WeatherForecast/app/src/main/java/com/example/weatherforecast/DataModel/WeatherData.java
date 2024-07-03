@@ -4,19 +4,17 @@ import java.io.Serializable;
 import java.util.List;
 
 public class WeatherData implements Serializable {
-
     public Coord coord;
     public List<Weather> weather;
-    public String base;
     public Main main;
+    public String base;
     public int visibility;
     public Wind wind;
-    public Rain rain;
     public Clouds clouds;
     public long dt;
     public Sys sys;
     public int timezone;
-    public int id;
+    public long id;
     public String name;
     public int cod;
 
@@ -44,11 +42,6 @@ public class WeatherData implements Serializable {
     public static class Wind {
         public double speed;
         public int deg;
-    }
-
-    public static class Rain {
-        public double h1;
-        public double h3;
     }
 
     public static class Clouds {
