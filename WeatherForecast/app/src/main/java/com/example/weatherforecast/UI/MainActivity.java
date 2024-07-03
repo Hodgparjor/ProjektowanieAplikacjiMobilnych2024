@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         weatherViewModel.getCurrentCity().observe(this, city -> {
             Log.i("WeatherVM_CityObserver", "Changing MainActivity current city from " + currentCity + " to " + city);
             currentCity = city;
-            fetchInitialData(city);
+            fetchInitialData(currentCity);
         });
     }
 
@@ -153,8 +153,6 @@ public class MainActivity extends AppCompatActivity {
         else {
             Toast.makeText(this, "Internet connection unavaliable, loading last saved data for " + city, Toast.LENGTH_SHORT).show();
         }
-        //weatherViewModel.setCurrentCity(city, false);
-        //updateSaveButtonIcon(city);
     }
 
     private void loadPreferencesAndInitialData(Bundle savedInstanceState) {

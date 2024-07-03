@@ -48,6 +48,7 @@ public class WeatherFragment extends Fragment {
     }
 
     private void updateUI(WeatherData weather) {
+        Log.i("updateUI", "Updating UI");
         if (weather != null) {
           TextView tempValue = getView().findViewById(R.id.temperature);
 
@@ -88,6 +89,8 @@ public class WeatherFragment extends Fragment {
             time.setText(dateFormat.format(new Date(weather.dt * 1000L)));
 
             updateWeatherIcon(weather.weather.get(0).description, R.id.weatherIcon);
+        } else {
+            Log.e("UpdateUI", "Weather was null.");
         }
     }
 

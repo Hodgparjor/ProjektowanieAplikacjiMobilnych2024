@@ -12,8 +12,8 @@ import com.example.weatherforecast.DataModel.ForecastData;
 import com.example.weatherforecast.DataModel.WeatherData;
 
 public class WeatherViewModel extends AndroidViewModel {
-    private MutableLiveData<WeatherData> weatherData = new MutableLiveData<>();
-    private MutableLiveData<ForecastData> forecastData = new MutableLiveData<>();
+    private final MutableLiveData<WeatherData> weatherData = new MutableLiveData<>();
+    private final MutableLiveData<ForecastData> forecastData = new MutableLiveData<>();
     private MutableLiveData<String> currentCity = new MutableLiveData<>();
     private WeatherDataManager weatherDataManager;
 
@@ -23,11 +23,11 @@ public class WeatherViewModel extends AndroidViewModel {
     }
 
     public void setWeatherData(WeatherData weather) {
-        weatherData.postValue(weather);
+        weatherData.setValue(weather);
     }
 
     public void setForecastData(ForecastData forecast) {
-        forecastData.postValue(forecast);
+        forecastData.setValue(forecast);
     }
     public LiveData<WeatherData> getWeatherData() {
         return weatherData;

@@ -7,8 +7,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.example.weatherforecast.DataModel.Coords;
 import com.example.weatherforecast.DataModel.ForecastData;
+import com.example.weatherforecast.DataModel.LocationData;
 import com.example.weatherforecast.DataModel.WeatherData;
 import com.example.weatherforecast.utils.NetworkUtil;
 import com.example.weatherforecast.utils.RetrofitUtil;
@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,8 +44,8 @@ public class WeatherDataManager {
 
     public void fetchData (String location) {
         if (NetworkUtil.isNetworkAvailable(context)) {
-            fetchWeatherData(location);
-            fetchForecastData(location);
+            Log.i("WDM_FetchData", "Fetching forecast and weather for " + location + "...");
+            fetchForecastAndWeather(location);
         } else {
             readWeatherDataFromFile();
             readForecastDataFromFile();
@@ -53,27 +54,48 @@ public class WeatherDataManager {
 
     public WeatherData getWeatherData(String location, boolean fetch) {
         if(!weatherDataHashMap.containsKey(location) || fetch) {
-            fetchWeatherData(location);
+            fetchForecastAndWeather(location);
         }
         return weatherDataHashMap.get(location);
     }
 
     public ForecastData getForecastData(String location, boolean fetch) {
         if(!forecastDataHashMap.containsKey(location) || fetch) {
-            fetchForecastData(location);
+            fetchForecastAndWeather(location);
         }
         return forecastDataHashMap.get(location);
     }
 
-    public void fetchWeatherData(String location) {
-        Coords locationCords = LocationDataManager.getCoords(location);
-        weatherService.getOpenWeatherWeatherData(locationCords.lat, locationCords.lon, OPENWEATHER_API_KEY).enqueue(new Callback<WeatherData>() {
+     public void fetchForecastAndWeather(String city) {
+        weatherService.getCoordinates(city, 1, OPENWEATHER_API_KEY).enqueue(new Callback<List<LocationData>>() {
+            @Override
+            public void onResponse( Call<List<LocationData>> call, Response<List<LocationData>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    LocationData location = response.body().get(0);
+                    Log.i("LocationCall", "Successfully fetched lat: " + location.lat + " and lon: " + location.lon + " for " + city);
+                    fetchForecastData(city, location);
+                    fetchWeatherData(city, location);
+                }
+                else {
+                    Log.e("LocationCall", "Failed to fetch coordinates");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<LocationData>> call, Throwable t) {
+                Log.e("LocationCall", "Error fetching coordinates", t);
+            }
+        });
+    }
+
+    public void fetchWeatherData(String city, LocationData location) {
+        weatherService.getOpenWeatherWeatherData(location.lat, location.lon, OPENWEATHER_API_KEY).enqueue(new Callback<WeatherData>() {
             @Override
             public void onResponse( Call<WeatherData> call, Response<WeatherData> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     WeatherData weatherData = response.body();
-                    updateWeatherDataToHashMap(location, weatherData);
-                    Log.i("fetchWeatherData", "Weather data updated.");
+                    updateWeatherDataToHashMap(city, weatherData);
+                    Log.i("fetchWeatherData", "Weather data updated for " + city + ". Timestamp: " + weatherData.dt);
                 } else {
                     Log.e("fetchWeatherData","Failed to fetch weather data.");
                 }
@@ -86,14 +108,15 @@ public class WeatherDataManager {
         });
     }
 
-    public void fetchForecastData(String location) {
-        Coords locationCords = LocationDataManager.getCoords(location);
-        weatherService.getOpenWeatherForecastData(locationCords.lat, locationCords.lon, OPENWEATHER_API_KEY).enqueue(new Callback<ForecastData>() {
+    public void fetchForecastData(String city, LocationData location) {
+        Log.i("fetchForecastData", "Sending forecast call...");
+        weatherService.getOpenWeatherForecastData(location.lat, location.lon, OPENWEATHER_API_KEY).enqueue(new Callback<ForecastData>() {
             @Override
             public void onResponse(@NonNull Call<ForecastData> call, @NonNull Response<ForecastData> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     ForecastData forecastData = response.body();
-                    updateForecastDataToHashMap(location, forecastData);
+                    Log.i("fetchForecastData", "Forecast call succesful for " + city);
+                    updateForecastDataToHashMap(city, forecastData);
                 } else {
                     Log.e("fetchForecastData","Failed to fetch weather data.");
                 }
