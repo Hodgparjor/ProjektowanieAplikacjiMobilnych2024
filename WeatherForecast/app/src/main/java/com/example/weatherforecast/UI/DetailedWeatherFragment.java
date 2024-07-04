@@ -85,7 +85,6 @@ public class DetailedWeatherFragment extends Fragment {
                 tempValue.setText(formattedTemp);
             }
 
-            TextView coords = getView().findViewById(R.id.coords);
             TextView pressure = getView().findViewById(R.id.detailed_pressure);
             TextView humidity = getView().findViewById(R.id.detailed_humidity);
             TextView windSpeed = getView().findViewById(R.id.detailed_windSpeed);
@@ -95,9 +94,6 @@ public class DetailedWeatherFragment extends Fragment {
             TextView city = getView().findViewById(R.id.city);
 
             city.setText(weather.name);
-
-            String coordsText = weather.coord.lat + ", " + weather.coord.lon;
-            coords.setText(coordsText);
 
             String humidityText = weather.main.humidity + "%";
             humidity.setText(humidityText);

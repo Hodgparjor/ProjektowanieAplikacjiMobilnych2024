@@ -33,6 +33,7 @@ public class WeatherFragment extends Fragment {
     private WeatherViewModel weatherVM;
 
     public WeatherFragment(WeatherViewModel vm) {
+        super();
         this.weatherVM = vm;
     }
 
