@@ -19,7 +19,7 @@ public class WeatherViewModel extends AndroidViewModel {
 
     public WeatherViewModel(Application application) {
         super(application);
-        weatherDataManager = new WeatherDataManager(getApplication().getApplicationContext());
+        weatherDataManager = new WeatherDataManager(getApplication().getApplicationContext(), this);
     }
 
     public void setWeatherData(WeatherData weather) {
@@ -40,7 +40,6 @@ public class WeatherViewModel extends AndroidViewModel {
     public void setCurrentCity(String city, boolean fetch) {
         if (!city.equals(currentCity.getValue())) {
             currentCity.setValue(city);
-            currentCity.postValue(city);
             Log.i("WeatherVM_setCurrentCity", "City changed to " + currentCity.getValue());
             if (fetch) {
                 fetchData();
@@ -51,8 +50,8 @@ public class WeatherViewModel extends AndroidViewModel {
     public void fetchData() {
         Log.i("WeatherVM_FetchData", "Fetching data for: " + currentCity.getValue());
         weatherDataManager.fetchData(currentCity.getValue());
-        setForecastData(weatherDataManager.getForecastData(currentCity.getValue(), false));
-        setWeatherData(weatherDataManager.getWeatherData(currentCity.getValue(), false));
+//        setForecastData(weatherDataManager.getForecastData(currentCity.getValue(), true));
+//        setWeatherData(weatherDataManager.getWeatherData(currentCity.getValue(), true));
     }
 
 

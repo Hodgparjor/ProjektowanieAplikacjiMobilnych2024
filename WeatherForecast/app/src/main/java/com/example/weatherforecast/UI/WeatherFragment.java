@@ -1,6 +1,7 @@
 package com.example.weatherforecast.UI;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -40,15 +41,19 @@ public class WeatherFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_weather, container, false);
 
-        weatherVM.getWeatherData().observe(getViewLifecycleOwner(), this::updateUI);
+        final Observer<WeatherData> weatherDataObserver = this::updateUI;
+
+        weatherVM.getWeatherData().observe(getViewLifecycleOwner(), weatherDataObserver);
+        weatherVM.fetchData();
 
         view.findViewById(R.id.city).setOnClickListener(v -> showCityInputDialog());
 
         return view;
     }
 
+
     private void updateUI(WeatherData weather) {
-        Log.i("updateUI", "Updating UI");
+        Log.i("updateUI", "Updating UI for weather.name = " + weather);
         if (weather != null) {
           TextView tempValue = getView().findViewById(R.id.temperature);
 
@@ -105,7 +110,7 @@ public class WeatherFragment extends Fragment {
         builder.setPositiveButton("OK", (dialog, which) -> {
             String city = input.getText().toString();
             if (!city.isEmpty()) {
-                weatherVM.setCurrentCity(city, true);
+                weatherVM.setCurrentCity(city, false);
                 Log.i("CityInputDialog", "Changing city to: " + city);
             }
         });

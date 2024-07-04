@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import com.example.weatherforecast.DataModel.ForecastData;
 import com.example.weatherforecast.DataModel.LocationData;
 import com.example.weatherforecast.DataModel.WeatherData;
+import com.example.weatherforecast.UI.WeatherViewModel;
 import com.example.weatherforecast.utils.NetworkUtil;
 import com.example.weatherforecast.utils.RetrofitUtil;
 import com.google.gson.Gson;
@@ -32,13 +33,16 @@ public class WeatherDataManager {
     private Context context;
     private WeatherService weatherService;
 
+    private WeatherViewModel vm;
+
     private HashMap<String, WeatherData> weatherDataHashMap = new HashMap<String, WeatherData>();
     private HashMap<String, ForecastData> forecastDataHashMap = new HashMap<String, ForecastData>();
 
     final private String OPENWEATHER_API_KEY = "ae8298f089fc5c51766b0374d72c36c9";
 
-    public WeatherDataManager(Context context) {
+    public WeatherDataManager(Context context, WeatherViewModel vm) {
         this.context = context;
+        this.vm = vm;
         weatherService = RetrofitUtil.getClient().create(WeatherService.class);
     }
 
@@ -94,8 +98,9 @@ public class WeatherDataManager {
             public void onResponse( Call<WeatherData> call, Response<WeatherData> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     WeatherData weatherData = response.body();
+                    vm.setWeatherData(weatherData);
                     updateWeatherDataToHashMap(city, weatherData);
-                    Log.i("fetchWeatherData", "Weather data updated for " + city + ". Timestamp: " + weatherData.dt);
+                    Log.i("fetchWeatherData", "Weather data updated for " + city + ". Timestamp: " + weatherData.dt + " weather.name: " + weatherData.name);
                 } else {
                     Log.e("fetchWeatherData","Failed to fetch weather data.");
                 }
@@ -109,13 +114,13 @@ public class WeatherDataManager {
     }
 
     public void fetchForecastData(String city, LocationData location) {
-        Log.i("fetchForecastData", "Sending forecast call...");
         weatherService.getOpenWeatherForecastData(location.lat, location.lon, OPENWEATHER_API_KEY).enqueue(new Callback<ForecastData>() {
             @Override
             public void onResponse(@NonNull Call<ForecastData> call, @NonNull Response<ForecastData> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     ForecastData forecastData = response.body();
-                    Log.i("fetchForecastData", "Forecast call succesful for " + city);
+                    vm.setForecastData(forecastData);
+                    Log.i("fetchForecastData", "Forecast data updated for " + city);
                     updateForecastDataToHashMap(city, forecastData);
                 } else {
                     Log.e("fetchForecastData","Failed to fetch weather data.");

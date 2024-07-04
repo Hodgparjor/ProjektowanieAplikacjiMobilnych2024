@@ -2,65 +2,126 @@ package com.example.weatherforecast.UI;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 
+import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
+import com.example.weatherforecast.DataModel.WeatherData;
 import com.example.weatherforecast.R;
+import com.example.weatherforecast.utils.TemperatureUtil;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DetailedWeatherFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
 public class DetailedWeatherFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private WeatherViewModel weatherVM;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public DetailedWeatherFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DetailedWeatherFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DetailedWeatherFragment newInstance(String param1, String param2) {
-        DetailedWeatherFragment fragment = new DetailedWeatherFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public DetailedWeatherFragment(WeatherViewModel vm) {
+        this.weatherVM = vm;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_detailed_weather, container, false);
+
+        final Observer<WeatherData> weatherDataObserver = this::updateUI;
+
+        weatherVM.getWeatherData().observe(getViewLifecycleOwner(), weatherDataObserver);
+
+        view.findViewById(R.id.city).setOnClickListener(v -> showCityInputDialog());
+
+        return view;
+    }
+
+    private void showCityInputDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Enter City Name");
+
+        final EditText input = new EditText(getContext());
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            String city = input.getText().toString();
+            if (!city.isEmpty()) {
+                weatherVM.setCurrentCity(city, false);
+                Log.i("CityInputDialog", "Changing city to: " + city);
+            }
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+
+    private void updateUI(WeatherData weather) {
+        Log.i("updateUI", "Updating UI for weather.name = " + weather);
+        if (weather != null) {
+            TextView tempValue = getView().findViewById(R.id.detailed_temperature);
+
+            String formattedTemp = TemperatureUtil.convertTemperature(getContext(), weather.main.temp);
+
+            String[] tempParts = formattedTemp.split(" ");
+            if (tempParts.length == 2) {
+                String tempValueStr = tempParts[0];
+                String tempUnitStr = tempParts[1];
+
+                tempValue.setText(tempValueStr);
+            } else {
+                tempValue.setText(formattedTemp);
+            }
+
+            TextView coords = getView().findViewById(R.id.coords);
+            TextView pressure = getView().findViewById(R.id.detailed_pressure);
+            TextView humidity = getView().findViewById(R.id.detailed_humidity);
+            TextView windSpeed = getView().findViewById(R.id.detailed_windSpeed);
+            TextView windDirection = getView().findViewById(R.id.detailed_windDirection);
+            TextView visibility = getView().findViewById(R.id.detailed_visibility);
+            TextView time = getView().findViewById(R.id.detailed_time);
+            TextView city = getView().findViewById(R.id.city);
+
+            city.setText(weather.name);
+
+            String coordsText = weather.coord.lat + ", " + weather.coord.lon;
+            coords.setText(coordsText);
+
+            String humidityText = weather.main.humidity + "%";
+            humidity.setText(humidityText);
+
+            String windSpeedTxt = weather.wind.speed + " m/s";
+            windSpeed.setText(windSpeedTxt);
+
+            String windDirectionTxt = weather.wind.deg + " °";
+            windDirection.setText(windDirectionTxt);
+
+            String visibilityTxt = weather.visibility + " m";
+            visibility.setText(visibilityTxt);
+
+            String pressureText = weather.main.pressure + " hPa";
+            pressure.setText(pressureText);
+
+            TimeZone timeZone = TimeZone.getTimeZone("GMT");
+            timeZone.setRawOffset(weather.timezone * 1000);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            dateFormat.setTimeZone(timeZone);
+            time.setText(dateFormat.format(new Date(weather.dt * 1000L)));
+
+        } else {
+            Log.e("UpdateUI", "Weather was null.");
         }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detailed_weather, container, false);
     }
 }

@@ -127,10 +127,10 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new WeatherFragment(weatherViewModel);
                 break;
             case FRAGMENT_DETAILED:
-                fragment = new DetailedWeatherFragment();
+                fragment = new DetailedWeatherFragment(weatherViewModel);
                 break;
             case FRAGMENT_FORECAST:
-                fragment = new ForecastFragment();
+                fragment = new ForecastFragment(weatherViewModel);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown fragment tag: " + fragmentTag);
@@ -145,6 +145,8 @@ public class MainActivity extends AppCompatActivity {
         if (city == null) {
             Log.e("fetchInitialData", "City is null");
             return;
+        } else if (!city.equals(weatherViewModel.getCurrentCity().getValue())) {
+            weatherViewModel.setCurrentCity(city, false);
         }
         weatherViewModel.fetchData();
         if (NetworkUtil.isNetworkAvailable(this)) {
@@ -158,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
     private void loadPreferencesAndInitialData(Bundle savedInstanceState) {
         SharedPreferences prefs = getSharedPreferences("WeatherlyPreferences", MODE_PRIVATE);
         currentCity = prefs.getString("defaultCity", "Łódź");
-
+        Log.i("loadPreferencesAndInitialData", "City loaded from preferences: " + currentCity);
         if (savedInstanceState != null) {
             activeFragment = savedInstanceState.getString("current_fragment_tag", FRAGMENT_WEATHER);
             currentCity = savedInstanceState.getString("current_city", "Łódź");
