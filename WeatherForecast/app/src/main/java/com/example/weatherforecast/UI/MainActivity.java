@@ -42,18 +42,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static boolean isMobile = true;
 
-    private Runnable fetchDataRunnable = new Runnable() {
-        @Override
-        public void run() {
-            String currentCity = weatherViewModel.getCurrentCity().getValue();
-            if (currentCity != null && !currentCity.isEmpty()) {
-                fetchInitialData(currentCity);
-            }
-
-            handler.postDelayed(this, 900000);
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,17 +67,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        handler.post(fetchDataRunnable);
     }
     @Override
     protected void onPause() {
         super.onPause();
-        handler.removeCallbacks(fetchDataRunnable);
     }
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacks(fetchDataRunnable);
     }
 
     private void initializeFragments() {
@@ -210,13 +195,7 @@ public class MainActivity extends AppCompatActivity {
         View settingsView = inflater.inflate(R.layout.settings, null);
         SharedPreferences preferences = getSharedPreferences("WeatherlyPreferences", MODE_PRIVATE);
         String defaultCity = preferences.getString("defaultCity", "Łódź");
-        settingsView.findViewById(R.id.btnRefreshSettings).setOnClickListener(v -> {
-            if (!currentCity.isEmpty()) {
-                fetchInitialData(currentCity);
-            } else {
-                Log.e("MainActivity", "Current city is empty");
-            }
-        });
+
 
         //RecyclerView savedCities = settingsView.findViewById(R.id.recyclerViewSavedCities);
         RadioGroup temperatureRadio = settingsView.findViewById(R.id.temperatureUnitRadioGroup);
@@ -258,6 +237,14 @@ public class MainActivity extends AppCompatActivity {
             String clickedCity = savedCitiesList.get(position);
             if(!currentCity.equals(clickedCity)) {
                 weatherViewModel.setCurrentCity(clickedCity, false);
+            }
+            dialog.dismiss();
+        });
+        settingsView.findViewById(R.id.btnRefreshSettings).setOnClickListener(v -> {
+            if (!currentCity.isEmpty()) {
+                fetchInitialData(currentCity);
+            } else {
+                Log.e("MainActivity", "Current city is empty");
             }
             dialog.dismiss();
         });

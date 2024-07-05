@@ -88,16 +88,17 @@ public class DetailedWeatherFragment extends Fragment {
             TextView tempValue = getView().findViewById(R.id.detailed_temperature);
 
             String formattedTemp = TemperatureUtil.convertTemperature(getContext(), weather.main.temp);
+            tempValue.setText(formattedTemp);
 
-            String[] tempParts = formattedTemp.split(" ");
-            if (tempParts.length == 2) {
-                String tempValueStr = tempParts[0];
-                String tempUnitStr = tempParts[1];
-
-                tempValue.setText(tempValueStr);
-            } else {
-                tempValue.setText(formattedTemp);
-            }
+//            String[] tempParts = formattedTemp.split(" ");
+//            if (tempParts.length == 2) {
+//                String tempValueStr = tempParts[0];
+//                String tempUnitStr = tempParts[1];
+//
+//                tempValue.setText(tempValueStr);
+//            } else {
+//                tempValue.setText(formattedTemp);
+//            }
 
             TextView pressure = getView().findViewById(R.id.detailed_pressure);
             TextView humidity = getView().findViewById(R.id.detailed_humidity);

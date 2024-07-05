@@ -43,14 +43,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:layout_gravity="center">
+            android:layout_gravity="center_horizontal">
 
             <LinearLayout
                 android:id="@+id/hourlyWeather"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center"
+                android:gravity="center_horizontal"
                 android:paddingTop="30dp">
 
                 <LinearLayout
@@ -171,8 +171,7 @@
                 android:id="@+id/dailyWeather"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingTop="30dp">
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -196,8 +195,8 @@
                         android:text="26°C"/>
                     <ImageView
                         android:id="@+id/dayImg_today"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:src="@drawable/fewclouds"/>
                 </LinearLayout>
 
@@ -223,8 +222,8 @@
                         android:text="25°C"/>
                     <ImageView
                         android:id="@+id/dayImg_1"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:src="@drawable/fewclouds"/>
                 </LinearLayout>
 
@@ -250,8 +249,8 @@
                         android:text="24°C"/>
                     <ImageView
                         android:id="@+id/dayImg_2"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:src="@drawable/fewclouds"/>
                 </LinearLayout>
 
@@ -277,8 +276,8 @@
                         android:text="23°C"/>
                     <ImageView
                         android:id="@+id/dayImg_3"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:src="@drawable/fewclouds"/>
                 </LinearLayout>
 
@@ -304,8 +303,8 @@
                         android:text="22°C"/>
                     <ImageView
                         android:id="@+id/dayImg_4"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:src="@drawable/fewclouds"/>
                 </LinearLayout>
 

@@ -58,6 +58,9 @@
                     android:layout_height="wrap_content"
                     android:text="Time"
                     android:textColor="@color/primary"
+                    android:autoSizeMaxTextSize="20sp"
+                    android:autoSizeMinTextSize="14sp"
+                    android:autoSizeStepGranularity="2sp"
                     android:textSize="16sp"/>
                 <TextView
                     android:id="@+id/detailed_time"
@@ -65,7 +68,10 @@
                     android:layout_height="wrap_content"
                     android:text="00:00"
                     android:textColor="@color/primary"
-                    android:textSize="22sp"/>
+                    android:textSize="22sp"
+                    android:autoSizeMaxTextSize="26sp"
+                    android:autoSizeMinTextSize="20sp"
+                    android:autoSizeStepGranularity="2sp"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -95,14 +101,20 @@
                     android:layout_height="wrap_content"
                     android:text="Temperature"
                     android:textColor="@color/primary"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:autoSizeMaxTextSize="20sp"
+                    android:autoSizeMinTextSize="14sp"
+                    android:autoSizeStepGranularity="2sp"/>
                 <TextView
                     android:id="@+id/detailed_temperature"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0°C"
                     android:textColor="@color/primary"
-                    android:textSize="22sp"/>
+                    android:textSize="22sp"
+                    android:autoSizeMaxTextSize="26sp"
+                    android:autoSizeMinTextSize="20sp"
+                    android:autoSizeStepGranularity="2sp"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -132,14 +144,20 @@
                     android:layout_height="wrap_content"
                     android:text="Pressure"
                     android:textColor="@color/primary"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:autoSizeMaxTextSize="20sp"
+                    android:autoSizeMinTextSize="14sp"
+                    android:autoSizeStepGranularity="2sp"/>
                 <TextView
                     android:id="@+id/detailed_pressure"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0 hPa"
                     android:textColor="@color/primary"
-                    android:textSize="22sp"/>
+                    android:textSize="22sp"
+                    android:autoSizeMaxTextSize="26sp"
+                    android:autoSizeMinTextSize="20sp"
+                    android:autoSizeStepGranularity="2sp"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -169,14 +187,20 @@
                     android:layout_height="wrap_content"
                     android:text="Humidity"
                     android:textColor="@color/primary"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:autoSizeMaxTextSize="20sp"
+                    android:autoSizeMinTextSize="14sp"
+                    android:autoSizeStepGranularity="2sp"/>
                 <TextView
                     android:id="@+id/detailed_humidity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0%"
                     android:textColor="@color/primary"
-                    android:textSize="22sp"/>
+                    android:textSize="22sp"
+                    android:autoSizeMaxTextSize="26sp"
+                    android:autoSizeMinTextSize="20sp"
+                    android:autoSizeStepGranularity="2sp"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -206,14 +230,20 @@
                     android:layout_height="wrap_content"
                     android:text="Wind Speed"
                     android:textColor="@color/primary"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:autoSizeMaxTextSize="20sp"
+                    android:autoSizeMinTextSize="14sp"
+                    android:autoSizeStepGranularity="2sp"/>
                 <TextView
                     android:id="@+id/detailed_windSpeed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0 m/s"
                     android:textColor="@color/primary"
-                    android:textSize="22sp"/>
+                    android:textSize="22sp"
+                    android:autoSizeMaxTextSize="26sp"
+                    android:autoSizeMinTextSize="20sp"
+                    android:autoSizeStepGranularity="2sp"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -243,14 +273,20 @@
                     android:layout_height="wrap_content"
                     android:text="Wind Direction"
                     android:textColor="@color/primary"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:autoSizeMaxTextSize="20sp"
+                    android:autoSizeMinTextSize="14sp"
+                    android:autoSizeStepGranularity="2sp"/>
                 <TextView
                     android:id="@+id/detailed_windDirection"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0"
                     android:textColor="@color/primary"
-                    android:textSize="22sp"/>
+                    android:textSize="22sp"
+                    android:autoSizeMaxTextSize="26sp"
+                    android:autoSizeMinTextSize="20sp"
+                    android:autoSizeStepGranularity="2sp"/>
             </LinearLayout>
         </LinearLayout>
 
@@ -280,14 +316,20 @@
                     android:layout_height="wrap_content"
                     android:text="Visibility"
                     android:textColor="@color/primary"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp"
+                    android:autoSizeMaxTextSize="20sp"
+                    android:autoSizeMinTextSize="14sp"
+                    android:autoSizeStepGranularity="2sp"/>
                 <TextView
                     android:id="@+id/detailed_visibility"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0 m"
                     android:textColor="@color/primary"
-                    android:textSize="22sp"/>
+                    android:textSize="22sp"
+                    android:autoSizeMaxTextSize="26sp"
+                    android:autoSizeMinTextSize="20sp"
+                    android:autoSizeStepGranularity="2sp"/>
             </LinearLayout>
         </LinearLayout>
 
