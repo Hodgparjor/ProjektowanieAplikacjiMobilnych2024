@@ -5,12 +5,16 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 
+import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,19 +33,33 @@ public class ForecastFragment extends Fragment {
     private WeatherViewModel weatherVM;
 
     public ForecastFragment(WeatherViewModel vm) {
+        super();
         this.weatherVM = vm;
+    }
+
+    public ForecastFragment() { super(); };
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("vm", weatherVM);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        if(weatherVM == null && savedInstanceState != null) {
+            weatherVM = savedInstanceState.getSerializable("vm", WeatherViewModel.class);
+        }
         View view = inflater.inflate(R.layout.fragment_forecast, container, false);
 
         final Observer<ForecastData> forecastDataObserver = this::updateUI;
 
         weatherVM.getForecastData().observe(getViewLifecycleOwner(), forecastDataObserver);
 
-        //view.findViewById(R.id.city).setOnClickListener(v -> showCityInputDialog());
+        if(view.findViewById(R.id.city) != null) {
+            view.findViewById(R.id.city).setOnClickListener(v -> showCityInputDialog());
+        }
 
         return view;
     }
@@ -51,7 +69,9 @@ public class ForecastFragment extends Fragment {
             return;
         }
         TextView city = getView().findViewById(R.id.city);
-        city.setText(weatherVM.getCurrentCity().getValue());
+        if(city != null) {
+            city.setText(weatherVM.getWeatherData().getValue().name);
+        }
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
         for (int i = 0; i < Math.min(4, forecast.list.size()); i++) {
@@ -155,6 +175,27 @@ public class ForecastFragment extends Fragment {
             drawableRes = R.drawable.mist;
         }
         return drawableRes;
+    }
+
+    private void showCityInputDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Enter City Name");
+
+        final EditText input = new EditText(getContext());
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            String city = input.getText().toString();
+            if (!city.isEmpty()) {
+                weatherVM.setCurrentCity(city, false);
+                Log.i("CityInputDialog", "Changing city to: " + city);
+            }
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.show();
     }
 
 }

@@ -38,8 +38,19 @@ public class WeatherFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("vm", weatherVM);
+    }
+
+    public WeatherFragment() {super();}
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        if(weatherVM == null && savedInstanceState != null) {
+            weatherVM = savedInstanceState.getSerializable("vm", WeatherViewModel.class);
+        }
         View view = inflater.inflate(R.layout.fragment_weather, container, false);
 
         final Observer<WeatherData> weatherDataObserver = this::updateUI;

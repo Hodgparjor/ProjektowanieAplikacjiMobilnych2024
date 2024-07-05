@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import retrofit2.Call;
@@ -38,12 +39,15 @@ public class WeatherDataManager {
     private HashMap<String, WeatherData> weatherDataHashMap = new HashMap<String, WeatherData>();
     private HashMap<String, ForecastData> forecastDataHashMap = new HashMap<String, ForecastData>();
 
+    private HashSet<String> savedCities = new HashSet<String>();
+
     final private String OPENWEATHER_API_KEY = "ae8298f089fc5c51766b0374d72c36c9";
 
     public WeatherDataManager(Context context, WeatherViewModel vm) {
         this.context = context;
         this.vm = vm;
         weatherService = RetrofitUtil.getClient().create(WeatherService.class);
+        readSavedCitiesFromFile();
     }
 
     public void fetchData (String location) {
@@ -52,7 +56,9 @@ public class WeatherDataManager {
             fetchForecastAndWeather(location);
         } else {
             readWeatherDataFromFile();
+            setWeatherDataFromHashMap(location);
             readForecastDataFromFile();
+            setForecastDataHashMap(location);
         }
     }
 
@@ -135,6 +141,9 @@ public class WeatherDataManager {
     }
 
     private void updateWeatherDataToHashMap(String location, WeatherData weatherData) {
+        if(!savedCities.contains(location)) {
+            return;
+        }
         if(weatherDataHashMap.containsKey(location)) {
             weatherDataHashMap.remove(location);
         }
@@ -143,6 +152,9 @@ public class WeatherDataManager {
     }
 
     private void updateForecastDataToHashMap(String location, ForecastData forecastData) {
+        if(!savedCities.contains(location)) {
+            return;
+        }
         if(forecastDataHashMap.containsKey(location)) {
             forecastDataHashMap.remove(location);
         }
@@ -161,6 +173,7 @@ public class WeatherDataManager {
         }
     }
 
+
     private void readWeatherDataFromFile() {
         try {
             FileInputStream fis = context.openFileInput("weather_data.json");
@@ -175,6 +188,70 @@ public class WeatherDataManager {
             weatherDataHashMap = new Gson().fromJson(sb.toString(), weatherHashMapType);
         } catch (IOException e) {
             Log.e(e.toString(), e.getMessage());
+        }
+    }
+
+    private void saveSavedCitiesToFile(HashSet<String> cities) {
+        try {
+            FileOutputStream fos = context.openFileOutput("saved_cities.json", Context.MODE_PRIVATE);
+            String json = new Gson().toJson(cities);
+            fos.write(json.getBytes());
+            fos.close();
+        } catch (IOException e) {
+            Log.e(e.toString(),e.getMessage());
+        }
+    }
+
+    private void readSavedCitiesFromFile() {
+        try {
+            FileInputStream fis = context.openFileInput("saved_cities.json");
+            InputStreamReader isr = new InputStreamReader(fis);
+            BufferedReader br = new BufferedReader(isr);
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+            Type savedCitiesHashSetType = new TypeToken<HashSet<String>>(){}.getType();
+            savedCities = new Gson().fromJson(sb.toString(), savedCitiesHashSetType);
+        } catch (IOException e) {
+            Log.e(e.toString(), e.getMessage());
+        }
+    }
+
+
+    private void setWeatherDataFromHashMap(String city) {
+        if(weatherDataHashMap.containsKey(city)) {
+            vm.setWeatherData(weatherDataHashMap.get(city));
+        }
+    }
+
+    public void addToSavedCities(String city) {
+        savedCities.add(city);
+        fetchForecastAndWeather(city);
+        saveSavedCitiesToFile(savedCities);
+    }
+
+    public void removeFromSavedCities(String city) {
+        savedCities.remove(city);
+        weatherDataHashMap.remove(city);
+        forecastDataHashMap.remove(city);
+        writeForecastDataToFile(forecastDataHashMap);
+        writeWeatherDataToFile(weatherDataHashMap);
+        saveSavedCitiesToFile(savedCities);
+    }
+
+    public boolean isCitySaved(String city) {
+        readSavedCitiesFromFile();
+        return savedCities.contains(city);
+    }
+
+    public HashSet<String> getSavedCities() {
+        return savedCities;
+    }
+    private void setForecastDataHashMap(String city) {
+        if(forecastDataHashMap.containsKey(city)) {
+            vm.setForecastData(forecastDataHashMap.get(city));
         }
     }
 

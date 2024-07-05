@@ -30,19 +30,33 @@ public class DetailedWeatherFragment extends Fragment {
     private WeatherViewModel weatherVM;
 
     public DetailedWeatherFragment(WeatherViewModel vm) {
+        super();
         this.weatherVM = vm;
+    }
+
+    public DetailedWeatherFragment() { super(); }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("vm", weatherVM);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        if(weatherVM == null && savedInstanceState != null) {
+            weatherVM = savedInstanceState.getSerializable("vm", WeatherViewModel.class);
+        }
         View view = inflater.inflate(R.layout.fragment_detailed_weather, container, false);
 
         final Observer<WeatherData> weatherDataObserver = this::updateUI;
 
         weatherVM.getWeatherData().observe(getViewLifecycleOwner(), weatherDataObserver);
 
-        view.findViewById(R.id.city).setOnClickListener(v -> showCityInputDialog());
+        if(view.findViewById(R.id.city) != null) {
+            view.findViewById(R.id.city).setOnClickListener(v -> showCityInputDialog());
+        }
 
         return view;
     }
@@ -93,7 +107,10 @@ public class DetailedWeatherFragment extends Fragment {
             TextView time = getView().findViewById(R.id.detailed_time);
             TextView city = getView().findViewById(R.id.city);
 
-            city.setText(weather.name);
+            if(city != null) {
+                city.setText(weather.name);
+            }
+
 
             String humidityText = weather.main.humidity + "%";
             humidity.setText(humidityText);

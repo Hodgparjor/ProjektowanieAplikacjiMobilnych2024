@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:padding="20dp">
+
 
     <TextView
         android:id="@+id/textViewCity"
@@ -27,14 +28,14 @@
         android:id="@+id/textViewSavedCities"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Your saved cities:"
+        android:text="Saved cities"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/defaultCityAutoCompleteTextView"
         android:layout_marginTop="8dp"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewSavedCities"
+    <ListView
+        android:id="@+id/listViewSavedCities"
         android:layout_width="0dp"
         android:layout_height="200dp"
         android:scrollbars="vertical"
@@ -47,10 +48,10 @@
         android:id="@+id/textViewTemperatureUnit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Temperature unit:"
+        android:text="Temperature unit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recyclerViewSavedCities"
+        app:layout_constraintTop_toBottomOf="@id/listViewSavedCities"
         android:layout_marginTop="8dp"/>
 
     <RadioGroup
@@ -80,4 +81,15 @@
             android:layout_height="wrap_content"
             android:text="Kelvin" />
     </RadioGroup>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnRefreshSettings"
+        android:text="Refresh"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/temperatureUnitRadioGroup"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -63,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary"
                 android:textSize="18sp"
-                android:text="27°C"/>
+                android:text="0 °C"/>
         </LinearLayout>
 
         <LinearLayout
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary"
                 android:textSize="18sp"
-                android:text="27°C"/>
+                android:text="0 °C"/>
         </LinearLayout>
 
         <LinearLayout
@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary"
                 android:textSize="18sp"
-                android:text="27°C"/>
+                android:text="0 °C"/>
         </LinearLayout>
 
         <LinearLayout
@@ -141,7 +141,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary"
                 android:textSize="18sp"
-                android:text="27°C"/>
+                android:text="0 °C"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -164,7 +164,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary"
                 android:textSize="18sp"
-                android:text="Today"/>
+                android:text="Day 1"/>
             <TextView
                 android:id="@+id/dayTemp_today"
                 android:paddingLeft="50dp"
@@ -172,7 +172,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary"
                 android:textSize="18sp"
-                android:text="26°C"/>
+                android:text="0 °C"/>
             <ImageView
                 android:id="@+id/dayImg_today"
                 android:layout_width="50dp"
@@ -191,7 +191,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary"
                 android:textSize="18sp"
-                android:text="Monday"/>
+                android:text="Day 2"/>
             <TextView
                 android:id="@+id/dayTemp_1"
                 android:paddingLeft="50dp"
@@ -199,7 +199,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary"
                 android:textSize="18sp"
-                android:text="25°C"/>
+                android:text="0 °C"/>
             <ImageView
                 android:id="@+id/dayImg_1"
                 android:layout_width="50dp"
@@ -218,7 +218,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary"
                 android:textSize="18sp"
-                android:text="Tuesday"/>
+                android:text="Day 3"/>
             <TextView
                 android:id="@+id/dayTemp_2"
                 android:paddingLeft="50dp"
@@ -226,7 +226,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary"
                 android:textSize="18sp"
-                android:text="24°C"/>
+                android:text="0 °C"/>
             <ImageView
                 android:id="@+id/dayImg_2"
                 android:layout_width="50dp"
@@ -245,7 +245,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary"
                 android:textSize="18sp"
-                android:text="Wednesday"/>
+                android:text="Day 4"/>
             <TextView
                 android:id="@+id/dayTemp_3"
                 android:paddingLeft="50dp"
@@ -253,7 +253,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary"
                 android:textSize="18sp"
-                android:text="23°C"/>
+                android:text="0 °C"/>
             <ImageView
                 android:id="@+id/dayImg_3"
                 android:layout_width="50dp"
@@ -272,7 +272,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary"
                 android:textSize="18sp"
-                android:text="Thursday"/>
+                android:text="Day 5"/>
             <TextView
                 android:id="@+id/dayTemp_4"
                 android:paddingLeft="50dp"
@@ -280,7 +280,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary"
                 android:textSize="18sp"
-                android:text="22°C"/>
+                android:text="0 °C"/>
             <ImageView
                 android:id="@+id/dayImg_4"
                 android:layout_width="50dp"

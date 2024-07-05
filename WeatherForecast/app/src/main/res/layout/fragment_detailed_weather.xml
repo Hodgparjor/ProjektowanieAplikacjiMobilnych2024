@@ -63,7 +63,7 @@
                     android:id="@+id/detailed_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="12:35"
+                    android:text="00:00"
                     android:textColor="@color/primary"
                     android:textSize="22sp"/>
             </LinearLayout>
@@ -100,7 +100,7 @@
                     android:id="@+id/detailed_temperature"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="27°C"
+                    android:text="0°C"
                     android:textColor="@color/primary"
                     android:textSize="22sp"/>
             </LinearLayout>
@@ -137,7 +137,7 @@
                     android:id="@+id/detailed_pressure"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1024 hPa"
+                    android:text="0 hPa"
                     android:textColor="@color/primary"
                     android:textSize="22sp"/>
             </LinearLayout>
@@ -174,7 +174,7 @@
                     android:id="@+id/detailed_humidity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="84%"
+                    android:text="0%"
                     android:textColor="@color/primary"
                     android:textSize="22sp"/>
             </LinearLayout>
@@ -211,7 +211,7 @@
                     android:id="@+id/detailed_windSpeed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="34 km/h"
+                    android:text="0 m/s"
                     android:textColor="@color/primary"
                     android:textSize="22sp"/>
             </LinearLayout>
@@ -248,7 +248,7 @@
                     android:id="@+id/detailed_windDirection"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="north-west"
+                    android:text="0"
                     android:textColor="@color/primary"
                     android:textSize="22sp"/>
             </LinearLayout>
@@ -285,7 +285,7 @@
                     android:id="@+id/detailed_visibility"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2300m"
+                    android:text="0 m"
                     android:textColor="@color/primary"
                     android:textSize="22sp"/>
             </LinearLayout>

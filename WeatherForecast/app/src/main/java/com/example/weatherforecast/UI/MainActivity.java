@@ -7,7 +7,11 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
+import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -19,15 +23,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.weatherforecast.DataAcquisition.WeatherDataManager;
-import com.example.weatherforecast.DataModel.ForecastData;
-import com.example.weatherforecast.DataModel.WeatherData;
 import com.example.weatherforecast.R;
 import com.example.weatherforecast.utils.NetworkUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private WeatherViewModel weatherViewModel;
     private Handler handler = new Handler(Looper.getMainLooper());
     private String currentCity = "Łódź";
+
+    private static boolean isMobile = true;
 
     private Runnable fetchDataRunnable = new Runnable() {
         @Override
@@ -89,6 +92,36 @@ public class MainActivity extends AppCompatActivity {
         handler.removeCallbacks(fetchDataRunnable);
     }
 
+    private void initializeFragments() {
+        checkLayout();
+        if(isMobile) {
+            initializeMobileFragments();
+        } else {
+            initializeTabletFragments();
+        }
+    }
+
+    private void checkLayout() {
+        isMobile = findViewById(R.id.fragmentFrame1) == null;
+    }
+    private void initializeTabletFragments() {
+        if (getSupportFragmentManager().findFragmentById(R.id.fragmentFrame1) == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragmentFrame1, new WeatherFragment(weatherViewModel))
+                    .commit();
+        }
+        if (getSupportFragmentManager().findFragmentById(R.id.fragmentFrame2) == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragmentFrame2, new DetailedWeatherFragment(weatherViewModel))
+                    .commit();
+        }
+        if (getSupportFragmentManager().findFragmentById(R.id.fragmentFrame3) == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragmentFrame3, new ForecastFragment(weatherViewModel))
+                    .commit();
+        }
+    }
+
 
     private void initializeMobileFragments() {
         loadFragment(FRAGMENT_WEATHER);
@@ -98,13 +131,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void InitializeActivity() {
-        initializeMobileFragments();
+        initializeFragments();
         findViewById(R.id.btnSettings).setOnClickListener(v -> showSettings());
-        findViewById(R.id.btnRefresh).setOnClickListener(v -> {
-            if (!currentCity.isEmpty()) {
-                fetchInitialData(currentCity);
+        ((CheckBox)findViewById(R.id.saveCheckBox)).setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(buttonView.isChecked()) {
+                weatherViewModel.saveCity(currentCity);
             } else {
-                Log.e("MainActivity", "Current city is empty");
+                weatherViewModel.removeSavedCity(currentCity);
             }
         });
         initializeObservers();
@@ -112,9 +145,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeObservers() {
         weatherViewModel.getCurrentCity().observe(this, city -> {
-            Log.i("WeatherVM_CityObserver", "Changing MainActivity current city from " + currentCity + " to " + city);
-            currentCity = city;
-            fetchInitialData(currentCity);
+            if(!city.equals(currentCity)) {
+                Log.i("WeatherVM_CityObserver", "Changing MainActivity current city from " + currentCity + " to " + city);
+                currentCity = city;
+                fetchInitialData(currentCity);
+                ((CheckBox)findViewById(R.id.saveCheckBox)).setChecked(weatherViewModel.isCitySaved(city));
+            }
         });
     }
 
@@ -174,14 +210,26 @@ public class MainActivity extends AppCompatActivity {
         View settingsView = inflater.inflate(R.layout.settings, null);
         SharedPreferences preferences = getSharedPreferences("WeatherlyPreferences", MODE_PRIVATE);
         String defaultCity = preferences.getString("defaultCity", "Łódź");
-        //ArrayList<String> savedCities = loadSavedCities();
+        settingsView.findViewById(R.id.btnRefreshSettings).setOnClickListener(v -> {
+            if (!currentCity.isEmpty()) {
+                fetchInitialData(currentCity);
+            } else {
+                Log.e("MainActivity", "Current city is empty");
+            }
+        });
 
-        RecyclerView savedCities = settingsView.findViewById(R.id.recyclerViewSavedCities);
+        //RecyclerView savedCities = settingsView.findViewById(R.id.recyclerViewSavedCities);
         RadioGroup temperatureRadio = settingsView.findViewById(R.id.temperatureUnitRadioGroup);
         AutoCompleteTextView defaultCityTextView = settingsView.findViewById(R.id.defaultCityAutoCompleteTextView);
 
-        //TODO add adapter
-        defaultCityTextView.setText(defaultCity);
+        ListView savedCities = settingsView.findViewById(R.id.listViewSavedCities);
+        List<String> savedCitiesList = new ArrayList<String>(weatherViewModel.getSavedCities());
+
+        savedCities.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, savedCitiesList) {
+
+        });
+
+
 
         String temperatureUnit = preferences.getString("temperatureUnit", "K");
         switch (temperatureUnit) {
@@ -206,6 +254,14 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Cancel", null);
         AlertDialog dialog = builder.create();
+        savedCities.setOnItemClickListener((parent, view, position, id) -> {
+            String clickedCity = savedCitiesList.get(position);
+            if(!currentCity.equals(clickedCity)) {
+                weatherViewModel.setCurrentCity(clickedCity, false);
+            }
+            dialog.dismiss();
+        });
+        defaultCityTextView.setText(defaultCity);
         dialog.show();
     }
 

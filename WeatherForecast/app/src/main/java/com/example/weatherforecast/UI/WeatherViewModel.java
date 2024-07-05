@@ -11,7 +11,10 @@ import com.example.weatherforecast.DataAcquisition.WeatherDataManager;
 import com.example.weatherforecast.DataModel.ForecastData;
 import com.example.weatherforecast.DataModel.WeatherData;
 
-public class WeatherViewModel extends AndroidViewModel {
+import java.io.Serializable;
+import java.util.HashSet;
+
+public class WeatherViewModel extends AndroidViewModel implements Serializable {
     private final MutableLiveData<WeatherData> weatherData = new MutableLiveData<>();
     private final MutableLiveData<ForecastData> forecastData = new MutableLiveData<>();
     private MutableLiveData<String> currentCity = new MutableLiveData<>();
@@ -52,6 +55,22 @@ public class WeatherViewModel extends AndroidViewModel {
         weatherDataManager.fetchData(currentCity.getValue());
 //        setForecastData(weatherDataManager.getForecastData(currentCity.getValue(), true));
 //        setWeatherData(weatherDataManager.getWeatherData(currentCity.getValue(), true));
+    }
+
+    public void saveCity(String city) {
+        weatherDataManager.addToSavedCities(city);
+    }
+
+    public void removeSavedCity(String city) {
+        weatherDataManager.removeFromSavedCities(city);
+    }
+
+    public boolean isCitySaved(String city) {
+        return weatherDataManager.isCitySaved(city);
+    }
+
+    public HashSet<String> getSavedCities() {
+        return weatherDataManager.getSavedCities();
     }
 
 
