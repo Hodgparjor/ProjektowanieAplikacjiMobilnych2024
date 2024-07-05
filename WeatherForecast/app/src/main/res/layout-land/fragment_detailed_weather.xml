@@ -4,7 +4,7 @@
     android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingVertical="10dp"
+    android:paddingVertical="15dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".UI.DetailedWeatherFragment">
 

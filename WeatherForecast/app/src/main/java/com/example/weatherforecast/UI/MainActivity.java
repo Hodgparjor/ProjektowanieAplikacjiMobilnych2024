@@ -189,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "fetching data for " + city, Toast.LENGTH_SHORT).show();
         }
         else {
-            Toast.makeText(this, "Internet connection unavaliable, loading last saved data for " + city, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Internet connection unavaliable, loading last saved data for " + city + ". WARNING DATA MIGHT BE OUTDATED!.", Toast.LENGTH_SHORT).show();
         }
     }
 

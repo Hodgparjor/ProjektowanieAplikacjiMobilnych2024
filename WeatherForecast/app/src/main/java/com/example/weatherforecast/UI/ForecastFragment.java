@@ -107,7 +107,7 @@ public class ForecastFragment extends Fragment {
             weatherImageView.setImageResource(getWeatherIcon(f.weather.get(0).description));
         }
 
-        sdf = new SimpleDateFormat("EEE, MMM d", Locale.getDefault());
+        sdf = new SimpleDateFormat("EEEE", Locale.getDefault());
         for (int i = 0; i < 5; i++) {
             if (forecast.list.size() > i * 8 + 5) {
                 ForecastData.Forecast daily = forecast.list.get(i * 8 + 5);
