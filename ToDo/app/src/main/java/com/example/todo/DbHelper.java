@@ -26,8 +26,8 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String IS_NOTIFICATION_ENABLED = "is_notification_enabled";
     private static final String CATEGORY = "category";
     private static final String ATTACHMENTS = "attachments";
-    public DbHelper(Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
+    public DbHelper(Context context) {
+        super(context, DB_NAME, null, DB_VERSION);
     }
 
     @Override
@@ -112,5 +112,19 @@ public class DbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_TASKS, ID + " = ?", new String[]{String.valueOf(task.getId())});
         db.close();
+    }
+
+    public List<String> getCategories() {
+        List<String> categories = new ArrayList<>();
+        String selectQuery = "SELECT DISTINCT " + CATEGORY + " FROM " + TABLE_TASKS;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            do {
+                categories.add(cursor.getString(cursor.getColumnIndexOrThrow(CATEGORY)));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return categories;
     }
 }

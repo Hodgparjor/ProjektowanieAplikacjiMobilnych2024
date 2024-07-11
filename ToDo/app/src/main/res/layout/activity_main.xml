@@ -64,7 +64,7 @@
             android:layout_gravity="bottom|end"
             android:contentDescription="Add Task"
             android:backgroundTint="@color/black"
-            android:foreground="@drawable/addTask"/>
+            android:foreground="@drawable/add_task"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

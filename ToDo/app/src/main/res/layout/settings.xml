@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:text="Notification time (minutes):"
             android:textColor="@color/primary"
-            android:textSize="20sp"/>
+            android:textSize="14sp"/>
 
         <EditText
             android:id="@+id/notificationTime"
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:text="Displayed categories:"
             android:textColor="@color/primary"
-            android:textSize="20sp"/>
+            android:textSize="14sp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/categoriesRecyclerView"
