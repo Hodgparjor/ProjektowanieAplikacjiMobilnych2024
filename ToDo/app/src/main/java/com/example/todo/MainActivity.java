@@ -24,6 +24,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.todo.Adapters.CategoryAdapter;
 import com.example.todo.Adapters.TaskAdapter;
 
 import java.io.File;
@@ -202,16 +203,15 @@ public class MainActivity extends AppCompatActivity {
         notificationTimeEditText.setText(String.valueOf(preferencesManager.getNotificationTime()));
 
         List<String> categories = db.getCategories();
-        categories.add(0, "all");
-//        CategoriesAdapter categoriesAdapter = new CategoriesAdapter(this, categories, sharedPreferencesHelper.loadSelectedCategories());
-//        categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        categoriesRecyclerView.setAdapter(categoriesAdapter);
+        CategoryAdapter categoriesAdapter = new CategoryAdapter(this, categories, preferencesManager.getSelectedCategories());
+        categoriesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        categoriesRecyclerView.setAdapter(categoriesAdapter);
 
         builder.setPositiveButton("Save", (dialog, which) -> {
             preferencesManager.putShowCompleted(showCompletedTasksCheckBox.isChecked());
 
-//            Set<String> selectedCategories = categoriesAdapter.getSelectedCategories();
-//            sharedPreferencesHelper.saveSelectedCategories(selectedCategories);
+            Set<String> selectedCategories = categoriesAdapter.getSelectedCategories();
+            preferencesManager.putSelectedCategories(selectedCategories);
 
             int notificationTime = Integer.parseInt(notificationTimeEditText.getText().toString());
             preferencesManager.putNotificationTime(notificationTime);
@@ -232,9 +232,10 @@ public class MainActivity extends AppCompatActivity {
         if (!showCompleted) {
             taskList = filterCompletedTasks(taskList);
         }
-//        if (!selectedCategories.contains("all")) {
-//            taskList = filterTasksByCategory(taskList, selectedCategories);
-//        }
+        if (!selectedCategories.isEmpty()) {
+            Log.i("ApplySettings","Amount of categories: " + selectedCategories.toString());
+            taskList = filterTasksByCategory(taskList, selectedCategories);
+        }
 
         List<Task> finalTaskList = taskList;
         new Handler(Looper.getMainLooper()).post(() -> {
@@ -251,6 +252,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return filteredTasks;
+    }
+
+    private List<Task> filterTasksByCategory(List<Task> taskList, Set<String> categories) {
+        List<Task> filteredList = new ArrayList<>();
+        for (Task task : taskList) {
+            if (categories.contains(task.getCategory())) {
+                filteredList.add(task);
+            }
+        }
+        return filteredList;
     }
 
 }
