@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -104,8 +105,11 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put(IS_NOTIFICATION_ENABLED, task.isNotificationEnabled() ? 1 : 0);
         values.put(CATEGORY, task.getCategory());
         values.put(ATTACHMENTS, String.join(",", task.getAttachments()));
+        int result = db.update(TABLE_TASKS, values, ID + " = ?", new String[]{String.valueOf(task.getId())});
+        db.close();
+        Log.d("Database", "updated task. Title: " + task.getTitle() + " Completed: " + task.isCompleted);
 
-        return db.update(TABLE_TASKS, values, ID + " = ?", new String[]{String.valueOf(task.getId())});
+        return result;
     }
 
     public void deleteTask(Task task) {
@@ -126,5 +130,30 @@ public class DbHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return categories;
+    }
+
+    public List<Task> getAllTasks() {
+        List<Task> taskList = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE_TASKS;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            do {
+                Task task = new Task(
+                        cursor.getInt(cursor.getColumnIndexOrThrow(ID)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(TITLE)),
+                        cursor.getString(cursor.getColumnIndexOrThrow(DESCRIPTION)),
+                        cursor.getLong(cursor.getColumnIndexOrThrow(CREATION)),
+                        cursor.getLong(cursor.getColumnIndexOrThrow(DEADLINE)),
+                        cursor.getInt(cursor.getColumnIndexOrThrow(IS_COMPLETED)) == 1,
+                        cursor.getInt(cursor.getColumnIndexOrThrow(IS_NOTIFICATION_ENABLED)) == 1,
+                        cursor.getString(cursor.getColumnIndexOrThrow(CATEGORY)),
+                        new ArrayList<>(List.of(cursor.getString(cursor.getColumnIndexOrThrow(ATTACHMENTS)).split(",")))
+                );
+                taskList.add(task);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return taskList;
     }
 }

@@ -10,6 +10,9 @@ public class Task {
     String description;
     long creation;
     long deadline;
+    boolean isCompleted;
+    boolean isNotificationEnabled;
+    private List<String> attachments;
 
     public int getId() {
         return id;
@@ -83,9 +86,6 @@ public class Task {
         this.attachments = attachments;
     }
 
-    boolean isCompleted;
-    boolean isNotificationEnabled;
-    private List<String> attachments;
 
     public Task(int id, String title, String description, long creation, long deadline, boolean isCompleted, boolean isNotificationEnabled, String category, List<String> attachments) {
         this.id = id;

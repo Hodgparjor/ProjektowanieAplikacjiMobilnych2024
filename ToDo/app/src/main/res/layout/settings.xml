@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:text="Show completed tasks"
             android:textColor="@color/secondaryLighter"
-            android:buttonTint="@color/primary"
+            android:backgroundTint="@color/primary"
             android:checked="false"/>
 
         <TextView

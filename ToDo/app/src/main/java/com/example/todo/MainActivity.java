@@ -2,14 +2,17 @@ package com.example.todo;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Spinner;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -21,18 +24,22 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.todo.Adapters.TaskAdapter;
+
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
 
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView tasksRecyclerView;
-
+    private TaskAdapter taskAdapter;
     private DbHelper db;
+    private SharedPreferencesManager preferencesManager;
     private boolean isSortDescending = true;
 
     private long selectedDeadline = 0;
@@ -47,10 +54,16 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        Init();
+        applySettings();
+    }
 
+    private void Init() {
         db = new DbHelper(this);
-
+        preferencesManager = new SharedPreferencesManager(this);
+        initializeTasksRecyclerView();
         initializeButtons();
+        initializeFiltering();
     }
 
     private void initializeButtons() {
@@ -59,26 +72,48 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.addTaskBtn).setOnClickListener(v -> { showAddTaskDialog(); });
     }
 
+    private void initializeTasksRecyclerView() {
+        tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
+        taskAdapter = new TaskAdapter(this, db.getAllTasks());
+
+        tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        tasksRecyclerView.setAdapter(taskAdapter);
+    }
+
+    private void initializeFiltering() {
+        ((android.widget.SearchView)findViewById(R.id.searchView)).setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                taskAdapter.filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                taskAdapter.filter(newText);
+                return false;
+            }
+        });
+
+    }
+
     private void changeSorting() {
         ImageButton sortButton = findViewById(R.id.sortBtn);
         isSortDescending = !isSortDescending;
 
+        taskAdapter.sort(isSortDescending);
         if(isSortDescending) {
             sortButton.setImageResource(R.drawable.sort_descending);
         } else {
             sortButton.setImageResource(R.drawable.sort_ascending);
         }
-
-        //TODO: Add sorting.
-
     }
 
     private void showAddTaskDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.add_task, null);
         builder.setView(view);
-        
-        long selectedDeadline = 1;
+
         List<String> selectedAttachments = new ArrayList<>();
 
         EditText titleEditText = view.findViewById(R.id.title);
@@ -111,8 +146,9 @@ public class MainActivity extends AppCompatActivity {
             long creationTime = System.currentTimeMillis();
             Task task = new Task(0, title, description, creationTime, selectedDeadline, false, isNotificationEnabled, category, new ArrayList<>(selectedAttachments));
             db.createTask(task);
+            taskAdapter.updateTasksList(db.getAllTasks());
 //            scheduleNotification(task);
-//            updateTaskList();
+
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> {
@@ -143,8 +179,12 @@ public class MainActivity extends AppCompatActivity {
             new TimePickerDialog(this, (view1, hourOfDay, minute) -> {
                 newDate.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 newDate.set(Calendar.MINUTE, minute);
+
                 selectedDeadline = newDate.getTimeInMillis();
-                dueDateTextView.setText(newDate.getTime().toString());
+
+                SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
+                String formattedDate = sdf.format(newDate.getTime());
+                dueDateTextView.setText(formattedDate);
             }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), true).show();
         }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
     }
@@ -158,8 +198,8 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView categoriesRecyclerView = view.findViewById(R.id.categoriesRecyclerView);
         EditText notificationTimeEditText = view.findViewById(R.id.notificationTime);
 
-//        showCompletedTasksCheckBox.setChecked(sharedPreferencesHelper.loadHideCompleted());
-//        notificationTimeEditText.setText(String.valueOf(sharedPreferencesHelper.loadNotificationTime()));
+        showCompletedTasksCheckBox.setChecked(preferencesManager.getShowCompleted());
+        notificationTimeEditText.setText(String.valueOf(preferencesManager.getNotificationTime()));
 
         List<String> categories = db.getCategories();
         categories.add(0, "all");
@@ -168,21 +208,49 @@ public class MainActivity extends AppCompatActivity {
 //        categoriesRecyclerView.setAdapter(categoriesAdapter);
 
         builder.setPositiveButton("Save", (dialog, which) -> {
-//            boolean hideCompleted = showCompletedTasksCheckBox.isChecked();
-//            sharedPreferencesHelper.saveHideCompleted(hideCompleted);
-//
+            preferencesManager.putShowCompleted(showCompletedTasksCheckBox.isChecked());
+
 //            Set<String> selectedCategories = categoriesAdapter.getSelectedCategories();
 //            sharedPreferencesHelper.saveSelectedCategories(selectedCategories);
-//
-//            int notificationTime = Integer.parseInt(notificationTimeEditText.getText().toString());
-//            String notificationUnit = notificationUnitSpinner.getSelectedItem().toString();
-//            sharedPreferencesHelper.saveNotificationTime(notificationTime, notificationUnit);
-//
-//            applySettings();
+
+            int notificationTime = Integer.parseInt(notificationTimeEditText.getText().toString());
+            preferencesManager.putNotificationTime(notificationTime);
+
+            applySettings();
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
         builder.create().show();
     }
+
+    private void applySettings() {
+        boolean showCompleted = preferencesManager.getShowCompleted();
+        Set<String> selectedCategories = preferencesManager.getSelectedCategories();
+
+        List<Task> taskList = db.getAllTasks();
+        if (!showCompleted) {
+            taskList = filterCompletedTasks(taskList);
+        }
+//        if (!selectedCategories.contains("all")) {
+//            taskList = filterTasksByCategory(taskList, selectedCategories);
+//        }
+
+        List<Task> finalTaskList = taskList;
+        new Handler(Looper.getMainLooper()).post(() -> {
+            taskAdapter.updateTasksList(finalTaskList);
+            taskAdapter.sort(isSortDescending);
+        });
+    }
+
+    private List<Task> filterCompletedTasks(List<Task> taskList) {
+        List<Task> filteredTasks = new ArrayList<>();
+        for (Task task : taskList) {
+            if (!task.isCompleted()) {
+                filteredTasks.add(task);
+            }
+        }
+        return filteredTasks;
+    }
+
 }

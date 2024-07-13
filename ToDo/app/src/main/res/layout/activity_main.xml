@@ -33,10 +33,11 @@
                 android:id="@+id/searchView"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:background="@drawable/rounded_corner"
                 android:layout_marginRight="5dp"
-                android:layout_marginLeft="5dp"/>
+                android:layout_marginLeft="5dp"
+                android:layout_gravity="center_vertical" />
 
             <ImageButton
                 android:id="@+id/settingsBtn"
@@ -51,7 +52,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_marginTop="5dp"
-            android:id="@+id/recyclerView"
+            android:id="@+id/tasksRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
