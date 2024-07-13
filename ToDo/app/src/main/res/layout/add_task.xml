@@ -64,6 +64,13 @@
             android:textColorHint="@color/secondaryLighter"
             android:textColor="@color/secondaryLighter"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notification"
+            android:textColor="@color/primary"
+            android:textSize="14sp"/>
+
         <CheckBox
             android:id="@+id/enableNotificationCheckBox"
             android:layout_width="wrap_content"

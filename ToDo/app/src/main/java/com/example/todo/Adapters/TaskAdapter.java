@@ -32,11 +32,17 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskViewHolder> {
     private Context context;
     private List<Task> tasksList;
     private List<Task> allTasksList;
+    private OnClick onClick;
 
-    public TaskAdapter(Context context, List<Task> tasks) {
+    public interface OnClick {
+        void onTaskClick(Task task);
+    }
+
+    public TaskAdapter(Context context, List<Task> tasks, OnClick onClick) {
         this.context = context;
         this.tasksList = tasks;
         this.allTasksList = new ArrayList<>(tasks);
+        this.onClick = onClick;
     }
 
     public void updateTasksList(List<Task> tasks) {
@@ -75,6 +81,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskViewHolder> {
             holder.descriptionTextView.setTextColor(ContextCompat.getColor(context, R.color.white));
             holder.deadlineTextView.setTextColor(ContextCompat.getColor(context, R.color.white));
         }
+
+        holder.itemView.setOnClickListener(v -> onClick.onTaskClick(task));
+
 
         holder.deleteButton.setOnClickListener(v -> {
             try (DbHelper db = new DbHelper(context)) {

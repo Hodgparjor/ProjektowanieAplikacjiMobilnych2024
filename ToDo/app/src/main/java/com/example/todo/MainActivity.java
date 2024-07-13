@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeTasksRecyclerView() {
         tasksRecyclerView = findViewById(R.id.tasksRecyclerView);
-        taskAdapter = new TaskAdapter(this, db.getAllTasks());
+        taskAdapter = new TaskAdapter(this, db.getAllTasks(), this::showEditTaskDialog);
 
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         tasksRecyclerView.setAdapter(taskAdapter);
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
             long creationTime = System.currentTimeMillis();
             Task task = new Task(0, title, description, creationTime, selectedDeadline, false, isNotificationEnabled, category, new ArrayList<>(selectedAttachments));
             db.createTask(task);
-            taskAdapter.updateTasksList(db.getAllTasks());
+            refreshTaskList();
 //            scheduleNotification(task);
 
         });
@@ -168,6 +168,73 @@ public class MainActivity extends AppCompatActivity {
             selectedAttachments.clear();
             dialog.dismiss();
         });
+
+        builder.create().show();
+    }
+
+    private void refreshTaskList() {
+        taskAdapter.updateTasksList(db.getAllTasks());
+        taskAdapter.sort(isSortDescending);
+        applySettings();
+    }
+
+    private void showEditTaskDialog(Task task) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.add_task, null);
+        builder.setView(view);
+
+        EditText titleEditText = view.findViewById(R.id.title);
+        EditText descriptionEditText = view.findViewById(R.id.description);
+        EditText categoryEditText = view.findViewById(R.id.category);
+        CheckBox enableNotificationCheckBox = view.findViewById(R.id.enableNotificationCheckBox);
+        Button selectDateTimeBtn = view.findViewById(R.id.selectDateTimeBtn);
+        TextView selectedDateTimeText = view.findViewById(R.id.selectedDateTimeText);
+        RecyclerView attachmentsRecyclerView = view.findViewById(R.id.attachmentsRecyclerView);
+        Button addAttachmentButton = view.findViewById(R.id.addAttachmentBtn);
+
+        titleEditText.setText(task.getTitle());
+        descriptionEditText.setText(task.getDescription());
+        categoryEditText.setText(task.getCategory());
+        enableNotificationCheckBox.setChecked(task.isNotificationEnabled());
+        selectedDeadline = task.getDeadline();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
+        String formattedDeadline = sdf.format(selectedDeadline);
+        selectedDateTimeText.setText(formattedDeadline);
+        selectDateTimeBtn.setOnClickListener(v -> showDateTimePicker(selectedDateTimeText));
+//        addAttachmentButton.setOnClickListener(v -> pickAttachment());
+//
+//        //currentAttachments list with task attachments
+//        currentAttachments = new ArrayList<>(task.getAttachments());
+//
+//        //RecyclerView for attachments
+//        attachmentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        attachmentsAdapter = new AttachmentsAdapter(currentAttachments, this);
+//        attachmentsRecyclerView.setAdapter(attachmentsAdapter);
+
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            String title = titleEditText.getText().toString();
+            String description = descriptionEditText.getText().toString();
+            String category = categoryEditText.getText().toString();
+            boolean isNotificationEnabled = enableNotificationCheckBox.isChecked();
+
+            if (title.isEmpty() || category.isEmpty() || selectedDeadline == 0) {
+                return;
+            }
+
+            task.setTitle(title);
+            task.setDescription(description);
+            task.setCategory(category);
+            task.setNotificationEnabled(isNotificationEnabled);
+            task.setDeadline(selectedDeadline);
+            //task.setAttachments(new ArrayList<>(currentAttachments));
+
+            db.updateTask(task);
+            refreshTaskList();
+//            cancelNotification(task);
+//            scheduleNotification(task);
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
         builder.create().show();
     }

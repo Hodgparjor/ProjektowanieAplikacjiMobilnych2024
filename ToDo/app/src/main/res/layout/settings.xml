@@ -10,6 +10,13 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Displayed Tasks"
+            android:textColor="@color/primary"
+            android:textSize="14sp"/>
+
         <CheckBox
             android:id="@+id/showCompletedTasksCheckBox"
             android:layout_width="wrap_content"
@@ -22,7 +29,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Notification time (minutes):"
+            android:text="Notification time (minutes)"
             android:textColor="@color/primary"
             android:textSize="14sp"/>
 
@@ -40,14 +47,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Displayed categories:"
+            android:text="Displayed categories"
             android:textColor="@color/primary"
             android:textSize="14sp"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/categoriesRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="200dp"
             android:scrollbars="vertical"/>
 
     </LinearLayout>
