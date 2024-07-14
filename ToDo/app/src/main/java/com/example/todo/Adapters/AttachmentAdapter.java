@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
@@ -82,16 +83,17 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentViewHolder
 //            }
 //        }
         try {
+            Log.i("AttachmentAdapterOpenFile", "Trying to open file " + file.getName() + " isFile?: " + file.isFile());
             Intent intent = new Intent();
             intent.setAction(android.content.Intent.ACTION_VIEW);
             String type = getMimeType(file.getPath());
-            intent.setDataAndType(Uri.parse(file.getAbsolutePath()), type);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            intent.setDataAndType(Uri.parse(file.getAbsolutePath()), type);
             context.startActivity(intent);
         } catch (Exception e) {
-
+            Toast.makeText(context, "Cannot open file.", Toast.LENGTH_SHORT).show();
         }
 
 

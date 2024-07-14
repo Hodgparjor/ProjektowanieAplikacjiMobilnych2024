@@ -334,51 +334,51 @@ public class MainActivity extends AppCompatActivity {
         selectAttachmentsActivityResultLauncher.launch(chooseFile);
     }
 
-//    private void handleSelectedFile(Uri uri) {
-//        try {
-//            Log.i("HandleSelectedFile", "File uri: " + uri);
-//            InputStream inputStream = getContentResolver().openInputStream(uri);
-//            File externalDir = getExternalFilesDir(null);
-//            if (externalDir != null) {
-//                String fileName = getFileName(uri);
-//                File file = new File(externalDir, fileName);
-//                OutputStream outputStream = Files.newOutputStream(file.toPath());
-//
-//                byte[] buffer = new byte[1024];
-//                int length;
-//                while ((length = inputStream.read(buffer)) > 0) {
-//                    outputStream.write(buffer, 0, length);
-//                }
-//
-//                outputStream.close();
-//                inputStream.close();
-//
-//                selectedAttachments.add(file.getAbsolutePath());
-//
-//                refreshAttachmentsList();
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
     private void handleSelectedFile(Uri uri) {
         try {
+            Log.i("HandleSelectedFile", "File uri: " + uri);
+            InputStream inputStream = getContentResolver().openInputStream(uri);
             File externalDir = getExternalFilesDir(null);
-            if(externalDir != null) {
+            if (externalDir != null) {
                 String fileName = System.currentTimeMillis() + getFileName(uri);
-                File originalFile = getFile(this, uri);
-                File localFileCopy = new File(externalDir, fileName);
-                Files.copy(originalFile.toPath(), localFileCopy.toPath());
+                File file = new File(externalDir, fileName);
+                OutputStream outputStream = Files.newOutputStream(file.toPath());
 
-                selectedAttachments.add(localFileCopy.getAbsolutePath());
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = inputStream.read(buffer)) > 0) {
+                    outputStream.write(buffer, 0, length);
+                }
+
+                outputStream.close();
+                inputStream.close();
+
+                selectedAttachments.add(file.getAbsolutePath());
+
                 refreshAttachmentsList();
             }
-        } catch (Exception e) {
-            Log.e("HandleSelectedFile", e.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
     }
+
+//    private void handleSelectedFile(Uri uri) {
+//        try {
+//            File externalDir = getExternalFilesDir(null);
+//            if(externalDir != null) {
+//                String fileName = System.currentTimeMillis() + getFileName(uri);
+//                File originalFile = getFile(this, uri);
+//                File localFileCopy = new File(externalDir, fileName);
+//                Files.copy(originalFile.toPath(), localFileCopy.toPath());
+//
+//                selectedAttachments.add(localFileCopy.getAbsolutePath());
+//                refreshAttachmentsList();
+//            }
+//        } catch (Exception e) {
+//            Log.e("HandleSelectedFile", e.toString());
+//        }
+//
+//    }
 
     private void refreshAttachmentsList() {
         if(attachmentAdapter != null) {
