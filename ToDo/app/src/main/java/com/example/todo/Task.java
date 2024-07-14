@@ -1,5 +1,6 @@
 package com.example.todo;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -96,7 +97,15 @@ public class Task {
         this.isCompleted = isCompleted;
         this.isNotificationEnabled = isNotificationEnabled;
         this.category = category;
-        this.attachments = attachments;
+        List<String> nullClearedAttachments = new ArrayList<>();
+        if(attachments != null) {
+            for (String attachment : attachments) {
+                if(attachment != null && !attachment.isEmpty()) {
+                    nullClearedAttachments.add(attachment);
+                }
+            }
+        }
+        this.attachments = nullClearedAttachments;
     }
 
 }

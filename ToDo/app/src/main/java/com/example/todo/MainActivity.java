@@ -1,11 +1,20 @@
 package com.example.todo;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,18 +25,30 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.todo.Adapters.AttachmentAdapter;
 import com.example.todo.Adapters.CategoryAdapter;
 import com.example.todo.Adapters.TaskAdapter;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,11 +60,16 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView tasksRecyclerView;
     private TaskAdapter taskAdapter;
+    private AttachmentAdapter attachmentAdapter;
     private DbHelper db;
     private SharedPreferencesManager preferencesManager;
     private boolean isSortDescending = true;
+    private ActivityResultLauncher<Intent> selectAttachmentsActivityResultLauncher;
 
     private long selectedDeadline = 0;
+    private List<String> selectedAttachments = new ArrayList<>();
+
+    private int REQUEST_CODE_PERMISSIONS = 111;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         });
         Init();
         applySettings();
+        requestPermissions();
     }
 
     private void Init() {
@@ -65,6 +92,28 @@ public class MainActivity extends AppCompatActivity {
         initializeTasksRecyclerView();
         initializeButtons();
         initializeFiltering();
+
+        selectAttachmentsActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            Intent data = result.getData();
+                            if (data != null) {
+                                if (data.getClipData() != null) {
+                                    for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+                                        Uri uri = data.getClipData().getItemAt(i).getUri();
+                                        handleSelectedFile(uri);
+                                    }
+                                } else if (data.getData() != null) {
+                                    Uri uri = data.getData();
+                                    handleSelectedFile(uri);
+                                }
+                            }
+                        }
+                    }
+                });
     }
 
     private void initializeButtons() {
@@ -110,12 +159,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == REQUEST_SCHEDULE_EXACT_ALARM) {
+//            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+//                Log.w("MainActivityAlarmsControl", "Permission SCHEDULE_EXACT_ALARM denied by user.");
+//            } else {
+//                Log.i("MainActivityAlarmsControl", "Permission SCHEDULE_EXACT_ALARM granted.");
+//            }
+//        }
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            for (int i = 0; i < permissions.length; i++) {
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    Log.w("MainActivity", "Permission " + permissions[i] + " was not granted.");
+                }
+            }
+        }
+    }
+
     private void showAddTaskDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.add_task, null);
         builder.setView(view);
 
-        List<String> selectedAttachments = new ArrayList<>();
+        selectedAttachments = new ArrayList<>();
 
         EditText titleEditText = view.findViewById(R.id.title);
         EditText descriptionEditText = view.findViewById(R.id.description);
@@ -127,12 +195,12 @@ public class MainActivity extends AppCompatActivity {
         Button addAttachmentBtn = view.findViewById(R.id.addAttachmentBtn);
 
         selectDateTimeBtn.setOnClickListener(v -> showDateTimePicker(selectedDateTimeText));
-//        addAttachmentBtn.setOnClickListener(v -> pickAttachment());
-//
-//        // Setup RecyclerView for attachments
-//        attachmentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        attachmentsAdapter = new AttachmentsAdapter(currentAttachments, this);
-//        attachmentsRecyclerView.setAdapter(attachmentsAdapter);
+        addAttachmentBtn.setOnClickListener(v -> showAttachmentPicker());
+
+        // Setup RecyclerView for attachments
+        attachmentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        attachmentAdapter = new AttachmentAdapter(selectedAttachments, this);
+        attachmentsRecyclerView.setAdapter(attachmentAdapter);
 
         builder.setPositiveButton("Add", (dialog, which) -> {
             String title = titleEditText.getText().toString();
@@ -200,16 +268,17 @@ public class MainActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault());
         String formattedDeadline = sdf.format(selectedDeadline);
         selectedDateTimeText.setText(formattedDeadline);
+
+        // On clicks
         selectDateTimeBtn.setOnClickListener(v -> showDateTimePicker(selectedDateTimeText));
-//        addAttachmentButton.setOnClickListener(v -> pickAttachment());
-//
-//        //currentAttachments list with task attachments
-//        currentAttachments = new ArrayList<>(task.getAttachments());
-//
-//        //RecyclerView for attachments
-//        attachmentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        attachmentsAdapter = new AttachmentsAdapter(currentAttachments, this);
-//        attachmentsRecyclerView.setAdapter(attachmentsAdapter);
+        addAttachmentButton.setOnClickListener(v -> showAttachmentPicker());
+
+        // Attachments recycler view
+        selectedAttachments = new ArrayList<>(task.getAttachments());
+        Log.i("EditTask", "Task attachments list: " + selectedAttachments.toString());
+        attachmentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        attachmentAdapter = new AttachmentAdapter(selectedAttachments, this);
+        attachmentsRecyclerView.setAdapter(attachmentAdapter);
 
         builder.setPositiveButton("Save", (dialog, which) -> {
             String title = titleEditText.getText().toString();
@@ -226,12 +295,13 @@ public class MainActivity extends AppCompatActivity {
             task.setCategory(category);
             task.setNotificationEnabled(isNotificationEnabled);
             task.setDeadline(selectedDeadline);
-            //task.setAttachments(new ArrayList<>(currentAttachments));
+            task.setAttachments(new ArrayList<>(selectedAttachments));
 
             db.updateTask(task);
             refreshTaskList();
 //            cancelNotification(task);
 //            scheduleNotification(task);
+            refreshAttachmentsList();
         });
 
         builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
@@ -255,6 +325,102 @@ public class MainActivity extends AppCompatActivity {
                 dueDateTextView.setText(formattedDate);
             }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), true).show();
         }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
+    }
+
+    private void showAttachmentPicker() {
+        Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+        chooseFile.setType("*/*");
+        chooseFile.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        selectAttachmentsActivityResultLauncher.launch(chooseFile);
+    }
+
+//    private void handleSelectedFile(Uri uri) {
+//        try {
+//            Log.i("HandleSelectedFile", "File uri: " + uri);
+//            InputStream inputStream = getContentResolver().openInputStream(uri);
+//            File externalDir = getExternalFilesDir(null);
+//            if (externalDir != null) {
+//                String fileName = getFileName(uri);
+//                File file = new File(externalDir, fileName);
+//                OutputStream outputStream = Files.newOutputStream(file.toPath());
+//
+//                byte[] buffer = new byte[1024];
+//                int length;
+//                while ((length = inputStream.read(buffer)) > 0) {
+//                    outputStream.write(buffer, 0, length);
+//                }
+//
+//                outputStream.close();
+//                inputStream.close();
+//
+//                selectedAttachments.add(file.getAbsolutePath());
+//
+//                refreshAttachmentsList();
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    private void handleSelectedFile(Uri uri) {
+        try {
+            File externalDir = getExternalFilesDir(null);
+            if(externalDir != null) {
+                String fileName = System.currentTimeMillis() + getFileName(uri);
+                File originalFile = getFile(this, uri);
+                File localFileCopy = new File(externalDir, fileName);
+                Files.copy(originalFile.toPath(), localFileCopy.toPath());
+
+                selectedAttachments.add(localFileCopy.getAbsolutePath());
+                refreshAttachmentsList();
+            }
+        } catch (Exception e) {
+            Log.e("HandleSelectedFile", e.toString());
+        }
+
+    }
+
+    private void refreshAttachmentsList() {
+        if(attachmentAdapter != null) {
+            attachmentAdapter.refresh();
+        }
+    }
+
+    public String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
+    }
+
+    private void requestPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    android.Manifest.permission.READ_MEDIA_IMAGES,
+                    android.Manifest.permission.READ_MEDIA_VIDEO,
+                    android.Manifest.permission.READ_MEDIA_AUDIO
+            }, REQUEST_CODE_PERMISSIONS);
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            }, REQUEST_CODE_PERMISSIONS);
+        }
     }
 
     private void showSettingsDialog() {
@@ -300,7 +466,7 @@ public class MainActivity extends AppCompatActivity {
             taskList = filterCompletedTasks(taskList);
         }
         if (!selectedCategories.isEmpty()) {
-            Log.i("ApplySettings","Amount of categories: " + selectedCategories.toString());
+            Log.i("ApplySettings","Selected categories: " + selectedCategories.toString());
             taskList = filterTasksByCategory(taskList, selectedCategories);
         }
 
@@ -329,6 +495,42 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return filteredList;
+    }
+
+    public static File getFile(Context context, Uri uri) throws IOException {
+        File destinationFilename = new File(context.getFilesDir().getPath() + File.separatorChar + queryName(context, uri));
+        try (InputStream ins = context.getContentResolver().openInputStream(uri)) {
+            createFileFromStream(ins, destinationFilename);
+        } catch (Exception ex) {
+            Log.e("Save File", ex.getMessage());
+            ex.printStackTrace();
+        }
+        return destinationFilename;
+    }
+
+    public static void createFileFromStream(InputStream ins, File destination) {
+        try (OutputStream os = new FileOutputStream(destination)) {
+            byte[] buffer = new byte[4096];
+            int length;
+            while ((length = ins.read(buffer)) > 0) {
+                os.write(buffer, 0, length);
+            }
+            os.flush();
+        } catch (Exception ex) {
+            Log.e("Save File", ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    private static String queryName(Context context, Uri uri) {
+        Cursor returnCursor =
+                context.getContentResolver().query(uri, null, null, null, null);
+        assert returnCursor != null;
+        int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+        returnCursor.moveToFirst();
+        String name = returnCursor.getString(nameIndex);
+        returnCursor.close();
+        return name;
     }
 
 }
