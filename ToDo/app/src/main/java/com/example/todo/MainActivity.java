@@ -2,7 +2,9 @@ package com.example.todo;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -362,23 +364,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    private void handleSelectedFile(Uri uri) {
-//        try {
-//            File externalDir = getExternalFilesDir(null);
-//            if(externalDir != null) {
-//                String fileName = System.currentTimeMillis() + getFileName(uri);
-//                File originalFile = getFile(this, uri);
-//                File localFileCopy = new File(externalDir, fileName);
-//                Files.copy(originalFile.toPath(), localFileCopy.toPath());
-//
-//                selectedAttachments.add(localFileCopy.getAbsolutePath());
-//                refreshAttachmentsList();
-//            }
-//        } catch (Exception e) {
-//            Log.e("HandleSelectedFile", e.toString());
-//        }
-//
-//    }
 
     private void refreshAttachmentsList() {
         if(attachmentAdapter != null) {
@@ -531,6 +516,36 @@ public class MainActivity extends AppCompatActivity {
         String name = returnCursor.getString(nameIndex);
         returnCursor.close();
         return name;
+    }
+
+    private void scheduleNotification(Task task) {
+        if (!task.isNotificationEnabled()) { return; }
+
+        long notificationTime = calculateNotificationTime(task.getDeadline());
+
+        Intent intent = new Intent(this, NotificationReceiver.class);
+        intent.putExtra("task_name", task.getTitle());
+        intent.putExtra("task_id", task.getId());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, task.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null && alarmManager.canScheduleExactAlarms()) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, notificationTime, pendingIntent);
+        } else {
+            Log.e("scheduleNotification", "Error scheduling notificaiton for task: " + task.getTitle());
+        }
+    }
+    private void cancelNotification(Task task) {
+        Intent intent = new Intent(this, NotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, task.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+    }
+    private long calculateNotificationTime(long dueTime) {
+        int notificationTime = preferencesManager.getNotificationTime();
+        long setNotificationTime = dueTime - notificationTime * 60 * 1000L;
+        if(setNotificationTime <= 0) { setNotificationTime = 1; }
+        return setNotificationTime;
     }
 
 }
