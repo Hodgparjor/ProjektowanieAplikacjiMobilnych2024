@@ -67,36 +67,23 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentViewHolder
     }
 
     private void openFile(File file) {
-//        Uri fileUri = FileProvider.getUriForFile(context, context.getApplicationContext().getPackageName() + ".provider", file);
-//        Intent intent = new Intent(Intent.ACTION_VIEW);
-//        intent.setDataAndType(fileUri, getMimeType(file.getAbsolutePath()));
-//        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//
-//        if (intent.resolveActivity(context.getPackageManager()) != null) {
-//            context.startActivity(intent);
-//        } else {
-//            Intent chooser = Intent.createChooser(intent, "Choose an application to open with:");
-//            if (intent.resolveActivity(context.getPackageManager()) != null) {
-//                context.startActivity(chooser);
-//            } else {
-//                Log.e("AttachmentAdapter", "No application can handle this file type.");
-//            }
-//        }
         try {
             Log.i("AttachmentAdapterOpenFile", "Trying to open file " + file.getName() + " isFile?: " + file.isFile());
+
             Intent intent = new Intent();
-            intent.setAction(android.content.Intent.ACTION_VIEW);
+            intent.setAction(Intent.ACTION_VIEW);
             String type = getMimeType(file.getPath());
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            intent.setDataAndType(Uri.parse(file.getAbsolutePath()), type);
+
+            Uri uri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
+            intent.setDataAndType(uri, type);
+
             context.startActivity(intent);
         } catch (Exception e) {
             Toast.makeText(context, "Cannot open file.", Toast.LENGTH_SHORT).show();
+            Log.e("AttachmentAdapterOpenFile", "Error opening file", e);
         }
-
-
     }
 
     private String getMimeType(String filePath) {
