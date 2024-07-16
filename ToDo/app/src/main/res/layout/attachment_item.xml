@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginVertical="2dp"
+        android:background="@color/secondary">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageButton
+        android:id="@+id/attachmentDeleteBtn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:foreground="@drawable/trash"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:layout_marginStart="10dp"
+            android:id="@+id/attachmentFileName"
+            android:layout_width="0dp"
+            android:textSize="16sp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:text="File Name"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/attachmentDeleteBtn"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!--<?xml version="1.0" encoding="utf-8"?>-->
+    <!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--    android:layout_width="match_parent"-->
+    <!--    android:layout_height="wrap_content"-->
+    <!--    android:layout_marginVertical="2dp"-->
+    <!--    android:background="@color/secondary">-->
+
+    <!--    <View-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        android:layout_alignParentTop="true"/>-->
+
+    <!--    <ImageButton-->
+    <!--        android:id="@+id/attachmentDeleteBtn"-->
+    <!--        android:layout_width="30dp"-->
+    <!--        android:layout_height="30dp"-->
+    <!--        android:foreground="@drawable/trash"-->
+    <!--        android:layout_alignParentStart="true"-->
+    <!--        android:layout_centerVertical="true"/>-->
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/attachmentFileName"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:layout_gravity="center_vertical"-->
+    <!--        android:gravity="center_vertical"-->
+    <!--        android:text="File Name"-->
+    <!--        android:textSize="16sp"-->
+    <!--        android:layout_alignParentEnd="true"-->
+    <!--        android:layout_toEndOf="@id/attachmentDeleteBtn"-->
+    <!--        android:layout_alignParentTop="true"-->
+    <!--        android:layout_alignParentBottom="true"/>-->
+
+
+
+    <!--</RelativeLayout>-->

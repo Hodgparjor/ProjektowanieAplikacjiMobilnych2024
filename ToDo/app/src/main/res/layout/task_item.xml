@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/black"
+    android:layout_marginHorizontal="5dp">
+
+    <LinearLayout
+        android:id="@+id/checkboxLinearLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/taskDeadline"
+        android:gravity="center_vertical">
+        <CheckBox
+            android:id="@+id/isCompletedCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:backgroundTint="@color/primary"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginTop="5dp"
+        android:id="@+id/taskTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:textSize="18sp"
+        app:layout_constraintStart_toEndOf="@id/checkboxLinearLayout"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/attachmentImageView"
+        android:textColor="@color/primary"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/taskCategory"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Category"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@id/checkboxLinearLayout"
+        app:layout_constraintTop_toBottomOf="@id/taskTitle"
+        app:layout_constraintEnd_toStartOf="@id/attachmentImageView"
+        android:textColor="@color/secondaryLighter"/>
+
+    <TextView
+        android:id="@+id/taskDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@id/checkboxLinearLayout"
+        app:layout_constraintTop_toBottomOf="@id/taskCategory"
+        app:layout_constraintEnd_toStartOf="@id/attachmentImageView"/>
+
+    <TextView
+        android:id="@+id/taskDeadline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Due: Deadline"
+        android:textSize="15sp"
+        app:layout_constraintStart_toEndOf="@id/checkboxLinearLayout"
+        app:layout_constraintTop_toBottomOf="@id/taskDescription"
+        app:layout_constraintEnd_toStartOf="@id/attachmentImageView"/>
+
+
+
+
+    <ImageButton
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:id="@+id/deleteTaskBtn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:foreground="@drawable/trash"
+        app:layout_constraintEnd_toEndOf="@id/bottomLine"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+        android:layout_marginTop="5dp"
+        android:id="@+id/attachmentImageView"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/attachment_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/deleteTaskBtn"/>
+
+    <View
+        android:id="@+id/bottomLine"
+        android:layout_marginTop="5dp"
+        android:layout_marginHorizontal="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/secondary"
+        app:layout_constraintTop_toBottomOf="@id/taskDeadline"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
