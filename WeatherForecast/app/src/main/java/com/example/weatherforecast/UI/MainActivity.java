@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String FRAGMENT_DETAILED = "fragment_detailed_weather";
     private String activeFragment = FRAGMENT_WEATHER;
     private WeatherViewModel weatherViewModel;
-    private Handler handler = new Handler(Looper.getMainLooper());
     private String currentCity = "Łódź";
 
     private static boolean isMobile = true;

@@ -43,7 +43,7 @@ public class WeatherFragment extends Fragment {
         outState.putSerializable("vm", weatherVM);
     }
 
-    public WeatherFragment() {super();}
+    public WeatherFragment() { super();}
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -70,18 +70,7 @@ public class WeatherFragment extends Fragment {
           TextView tempValue = getView().findViewById(R.id.temperature);
 
             String formattedTemp = TemperatureUtil.convertTemperature(getContext(), weather.main.temp);
-
-            String[] tempParts = formattedTemp.split(" ");
-            if (tempParts.length == 2) {
-                String tempValueStr = tempParts[0];
-                String tempUnitStr = tempParts[1];
-
-                tempValue.setText("Temp (" + tempUnitStr + ")");
-                tempValue.setText(tempValueStr);
-            } else {
-                tempValue.setText("Temp");
-                tempValue.setText(formattedTemp);
-            }
+            tempValue.setText(formattedTemp);
 
             TextView coords = getView().findViewById(R.id.coords);
             TextView description = getView().findViewById(R.id.description);
