@@ -41,6 +41,19 @@ public class MainActivity extends AppCompatActivity {
 
     private static boolean isMobile = true;
 
+    private Handler handler = new Handler(Looper.getMainLooper());
+    private Runnable fetchDataRunnable = new Runnable() {
+        @Override
+        public void run() {
+            String currentCity = weatherViewModel.getCurrentCity().getValue();
+            if (currentCity != null && !currentCity.isEmpty()) {
+                fetchInitialData(currentCity);
+            }
+
+            handler.postDelayed(this, 600000); // Refresh data each 10 minutes
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         weatherViewModel = new ViewModelProvider(this).get(WeatherViewModel.class);
         InitializeActivity();
         loadPreferencesAndInitialData(savedInstanceState);
+        handler.post(fetchDataRunnable);
     }
 
     @Override
@@ -66,14 +80,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        handler.post(fetchDataRunnable);
     }
     @Override
     protected void onPause() {
         super.onPause();
+        handler.removeCallbacks(fetchDataRunnable);
     }
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        handler.removeCallbacks(fetchDataRunnable);
     }
 
     private void initializeFragments() {
