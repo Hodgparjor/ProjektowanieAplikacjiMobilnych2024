@@ -6,8 +6,10 @@ import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -35,6 +37,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -72,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     private List<String> selectedAttachments = new ArrayList<>();
 
     private int REQUEST_CODE_PERMISSIONS = 111;
-
+    private int REQUEST_CODE_SCHEDULE_EXACT_ALARM = 333;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +89,18 @@ public class MainActivity extends AppCompatActivity {
         Init();
         applySettings();
         requestPermissions();
+        SetNotificationIntentFilter();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(exactAlarmPermissionReceiver);
     }
 
     private void Init() {
@@ -164,13 +179,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == REQUEST_SCHEDULE_EXACT_ALARM) {
-//            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-//                Log.w("MainActivityAlarmsControl", "Permission SCHEDULE_EXACT_ALARM denied by user.");
-//            } else {
-//                Log.i("MainActivityAlarmsControl", "Permission SCHEDULE_EXACT_ALARM granted.");
-//            }
-//        }
+        if (requestCode == REQUEST_CODE_SCHEDULE_EXACT_ALARM) {
+            if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                Log.w("MainActivityAlarmsControl", "Permission SCHEDULE_EXACT_ALARM denied by user.");
+            } else {
+                Log.i("MainActivityAlarmsControl", "Permission SCHEDULE_EXACT_ALARM granted.");
+            }
+        }
         if (requestCode == REQUEST_CODE_PERMISSIONS) {
             for (int i = 0; i < permissions.length; i++) {
                 if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
@@ -218,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
             Task task = new Task(0, title, description, creationTime, selectedDeadline, false, isNotificationEnabled, category, new ArrayList<>(selectedAttachments));
             db.createTask(task);
             refreshTaskList();
-//            scheduleNotification(task);
+            scheduleNotification(task);
 
         });
 
@@ -301,8 +316,8 @@ public class MainActivity extends AppCompatActivity {
 
             db.updateTask(task);
             refreshTaskList();
-//            cancelNotification(task);
-//            scheduleNotification(task);
+            cancelNotification(task);
+            scheduleNotification(task);
             refreshAttachmentsList();
         });
 
@@ -406,7 +421,32 @@ public class MainActivity extends AppCompatActivity {
                     Manifest.permission.WRITE_EXTERNAL_STORAGE
             }, REQUEST_CODE_PERMISSIONS);
         }
+        requestExactAlarmPermission();
+        requestScheduleExactAlarmPermission();
     }
+
+    private void requestScheduleExactAlarmPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SCHEDULE_EXACT_ALARM) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SCHEDULE_EXACT_ALARM}, REQUEST_CODE_SCHEDULE_EXACT_ALARM);
+        }
+    }
+
+    private void requestExactAlarmPermission() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null && !alarmManager.canScheduleExactAlarms()) {
+            Intent intent = new Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, REQUEST_CODE_SCHEDULE_EXACT_ALARM);
+        }
+   }
+
+    private final BroadcastReceiver exactAlarmPermissionReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED.equals(intent.getAction())) {
+            }
+        }
+    };
 
     private void showSettingsDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -529,6 +569,7 @@ public class MainActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, task.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         if (alarmManager != null && alarmManager.canScheduleExactAlarms()) {
+            Log.i("sheduleNotificaiton", "Notification sheduled at " + notificationTime);
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, notificationTime, pendingIntent);
         } else {
             Log.e("scheduleNotification", "Error scheduling notificaiton for task: " + task.getTitle());
@@ -546,6 +587,19 @@ public class MainActivity extends AppCompatActivity {
         long setNotificationTime = dueTime - notificationTime * 60 * 1000L;
         if(setNotificationTime <= 0) { setNotificationTime = 1; }
         return setNotificationTime;
+    }
+
+    private void SetNotificationIntentFilter() {
+        IntentFilter filter = new IntentFilter(AlarmManager.ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED);
+        registerReceiver(exactAlarmPermissionReceiver, filter);
+
+        int taskId = getIntent().getIntExtra("task_id", -1);
+        if (taskId != -1) {
+            Task task = db.readTask(taskId);
+            if (task != null) {
+                showEditTaskDialog(task);
+            }
+        }
     }
 
 }
