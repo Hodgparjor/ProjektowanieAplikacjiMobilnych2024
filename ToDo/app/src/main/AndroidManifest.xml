@@ -33,6 +33,8 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <receiver android:name=".NotificationReceiver" android:exported="false" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
