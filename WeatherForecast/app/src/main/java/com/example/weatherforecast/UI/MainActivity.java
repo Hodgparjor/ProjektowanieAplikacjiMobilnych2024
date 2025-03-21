@@ -16,8 +16,11 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -156,18 +159,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadFragment(String fragmentTag) {
+        AppCompatButton weatherButton = findViewById(R.id.btnWeather);
+        AppCompatButton detailsButton = findViewById(R.id.btnDetails);
+        AppCompatButton forecastButton = findViewById(R.id.btnForecast);
         Fragment fragment;
         activeFragment = fragmentTag;
+        @ColorInt
+        int secondaryRedColor = ContextCompat.getColor(getApplicationContext(), R.color.secondary_red);
+        int baseTextColor = ContextCompat.getColor(getApplicationContext(), R.color.primary);
 
         switch (fragmentTag) {
             case FRAGMENT_WEATHER:
                 fragment = new WeatherFragment(weatherViewModel);
+                weatherButton.setTextColor(secondaryRedColor);
+                detailsButton.setTextColor(baseTextColor);
+                forecastButton.setTextColor(baseTextColor);
                 break;
             case FRAGMENT_DETAILED:
                 fragment = new DetailedWeatherFragment(weatherViewModel);
+                weatherButton.setTextColor(baseTextColor);
+                detailsButton.setTextColor(secondaryRedColor);
+                forecastButton.setTextColor(baseTextColor);
                 break;
             case FRAGMENT_FORECAST:
                 fragment = new ForecastFragment(weatherViewModel);
+                weatherButton.setTextColor(baseTextColor);
+                detailsButton.setTextColor(baseTextColor);
+                forecastButton.setTextColor(secondaryRedColor);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown fragment tag: " + fragmentTag);
